@@ -39,7 +39,6 @@ const inputElevation = document.querySelector('.form__input--elevation');
 //   // .tooltip({ permanent: true });
 // });
 
-const actions = ['change', 'load'];
 // actions.forEach(action => {
 //   inputType.addEventListener(action, e =>
 //     e.target.value !== 'running'
@@ -92,7 +91,7 @@ class App {
   constructor() {
     this._getPosition();
     form.addEventListener('submit', this._newWorkout.bind(this));
-    actions.forEach(action => {
+    ['change', 'load'].forEach(action => {
       inputType.addEventListener(action, this._toggleElevationField);
     });
   }

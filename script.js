@@ -58,19 +58,21 @@ class Workout {
   #type;
   #distance;
   #duration;
-  #date;
-  constructor(type, distance, duration) {
+  #date = new Date();
+  #coords;
+  constructor(type, distance, duration, coords) {
     this.#type = type;
     this.#distance = Number(distance);
     this.#duration = Number(duration);
-    this.#date = new Date();
+
+    this.#coords = coords;
   }
 }
 class Running extends Workout {
   #cadence;
   #pace;
-  constructor(type, distance, duration, cadence) {
-    super(type, distance, duration);
+  constructor(type, distance, duration, cadence, coords) {
+    super(type, distance, duration, coords);
     this.#cadence = Number(cadence);
     this.#pace;
   }
@@ -78,15 +80,16 @@ class Running extends Workout {
 class Cycling extends Workout {
   #elevation;
   #speed;
-  constructor(type, distance, duration, elevation) {
-    super(type, distance, duration);
+  constructor(type, distance, duration, elevation, coords) {
+    super(type, distance, duration, coords);
     this.#elevation = Number(elevation);
     this.#speed;
   }
 }
-let newWorkout;
+
 class App {
   #mapCoords;
+  #newWorkout;
   #map;
   constructor() {
     this._getPosition();
@@ -184,12 +187,12 @@ class App {
       };
     });
     const { type, distance, duration, cadence, elevation } = inputsValues;
-    newWorkout =
+    this.#newWorkout =
       type === 'running'
-        ? new Running(type, distance, duration, cadence)
-        : new Cycling(type, distance, duration, elevation);
+        ? new Running(type, distance, duration, cadence, this.#mapCoords)
+        : new Cycling(type, distance, duration, elevation, this.#mapCoords);
     // console.log(mapCoords);
-    // console.log(newWorkout);
+    console.log(this.#newWorkout);
     var myIcon = L.icon({
       iconUrl: 'icon.png',
       iconSize: [38, 38],
@@ -204,7 +207,7 @@ class App {
           keepInView: true,
           closeOnClick: false,
 
-          className: `${newWorkout.type}`,
+          className: `${this.#newWorkout.type}`,
         })
       )
       .setPopupContent('<p>Hello world!<br />This is a nice popup.</p>')

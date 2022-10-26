@@ -81,23 +81,40 @@ class Cycling extends Workout {
 
 class App {
   #mapCoords;
-  #workoutsList = JSON.parse(localStorage.getItem('workouts')) || [];
+  #workoutsList;
   #map;
   constructor() {
     // (() => {
 
     // })();
     this._getPosition();
+
     form.addEventListener('submit', this._newWorkout.bind(this));
     ['change'].forEach(action => {
       inputType.addEventListener(action, this._toggleElevationField);
     });
 
+    this._getLocalStorage();
     this._renderWorkouts();
     // this.#workoutsList = JSON.parse(localStorage.getItem('workouts'));
     // (!localStorage.getItem('workouts') &&
     //   localStorage.setItem('workouts', JSON.stringify([]))) ||
     // localStorage.getItem('workouts', JSON.stringify([]));
+    containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+  }
+  _moveToPopup(e) {
+    if (e.target.closest('li') !== null) {
+      // console.log(
+      //   this._getWorkouts().find(
+      //     workout => workout.id == e.target.closest('li').dataset.id
+      //   )
+      // );
+      const { coords } = this._getWorkouts().find(
+        workout => workout.id == e.target.closest('li').dataset.id
+      );
+      this.#map.setView(coords);
+      console.log('el coords', coords);
+    }
   }
 
   _getPosition() {
@@ -139,6 +156,11 @@ class App {
     }).addTo(this.#map);
 
     this.#map.on('click', mapEvent => this._showForm.call(this, mapEvent));
+    // let markers = [];
+    // for (const workout of this._getWorkouts()) {
+    //   markers = [...markers, this._renderWorkoutMarker(workout)];
+    // }
+    this._getWorkouts().forEach(workout => this._renderWorkoutMarker(workout));
   }
   _showForm(mapEvent) {
     form.classList.remove('hidden');
@@ -168,24 +190,24 @@ class App {
           keepInView: true,
           closeOnClick: true,
 
-          className: `${newWorkout.type}-popup }`,
+          className: `${newWorkout.type}-popup `,
         })
       )
       .setPopupContent(
-        `${(newWorkout.getType === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
-          newWorkout.getType.slice(0, 1).toUpperCase() +
-          newWorkout.getType.slice(1)
-        } on ${new Intl.DateTimeFormat('en-US', {
+        `${(newWorkout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
+          newWorkout.type.slice(0, 1).toUpperCase() + newWorkout.type.slice(1)
+        } on
+        ${new Intl.DateTimeFormat('en-US', {
           year: 'numeric',
           month: 'long',
-        }).format(newWorkout.getDate)} `
-      )
-      .openPopup();
+        }).format(new Date(newWorkout.date))}
+      `
+      );
   }
   _renderWorkout(workout) {
-    const html = ` <li class="workout workout--${
-      workout.type
-    }" data-id="1234567890">
+    const html = ` <li class="workout workout--${workout.type}" data-id=${
+      workout.id
+    }>
     <h2 class="workout__title">  ${
       workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
     } on ${new Intl.DateTimeFormat('en-US', {
@@ -206,7 +228,28 @@ class App {
       <span class="workout__unit">${
         (workout.type === 'running' && 'min') || 'km/h'
       }</span>
-    </div></li>`;
+    </div>
+    <div class="workout__details">
+    <span class="workout__icon">⚡️</span>
+    <span class="workout__value">${
+      // (workout.type === 'running' &&)
+      workout.pace?.toFixed(2) || workout.speed?.toFixed(2)
+    }</span>
+    <span class="workout__unit"> ${
+      (workout.type === 'running' && 'min/km') || 'km/h'
+    }</span>
+  </div>
+  <div class="workout__details">
+    <span class="workout__icon">
+    ${(workout.type === 'running' && '🦶') || '⛰'}
+    
+    </span>
+    <span class="workout__value"> ${
+      workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
+    }</span>
+    <span class="workout__unit">m</span>
+  </div>
+    </li>`;
     document.querySelector('.workouts').insertAdjacentHTML('beforeend', html);
   }
   _renderWorkouts() {
@@ -241,6 +284,13 @@ class App {
         //   )
         //   .openPopup();
       });
+  }
+  _hideform(form) {
+    form.style.display = 'none';
+    form.classList.add('hidden');
+    setTimeout(() => {
+      form.style.display = 'grid';
+    }, 1000);
   }
 
   _newWorkout(e) {
@@ -278,12 +328,17 @@ class App {
 
     if (newWorkout) {
       this._renderWorkoutMarker(newWorkout);
-      form.classList.add('hidden');
+      this._hideform(form);
     }
     e.target.reset();
     this._toggleElevationField();
     localStorage.setItem('workouts', JSON.stringify(this._getWorkouts()));
     this._renderWorkout(newWorkout);
+  }
+  _getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('workouts'));
+    if (!data) return;
+    this.#workoutsList = data;
   }
 }
 //REFACTORING FOR PROJECT ARCHITECTURE

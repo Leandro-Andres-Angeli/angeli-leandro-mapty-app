@@ -93,9 +93,9 @@ class App {
     ['change'].forEach(action => {
       inputType.addEventListener(action, this._toggleElevationField);
     });
-
     this._getLocalStorage();
-    this._renderWorkouts();
+    this._setLocalStorage();
+
     // this.#workoutsList = JSON.parse(localStorage.getItem('workouts'));
     // (!localStorage.getItem('workouts') &&
     //   localStorage.setItem('workouts', JSON.stringify([]))) ||
@@ -112,7 +112,7 @@ class App {
       const { coords } = this._getWorkouts().find(
         workout => workout.id == e.target.closest('li').dataset.id
       );
-      this.#map.setView(coords);
+      this.#map.setView(coords, 30, { pan: { animate: true, duration: 2 } });
       console.log('el coords', coords);
     }
   }
@@ -134,10 +134,10 @@ class App {
     return this.#workoutsList;
   }
   _saveWorkout(workout) {
+    console.log(this);
     this.#workoutsList = [...this._getWorkouts(), workout];
-    // localStorage.setItem('workouts', this._getWorkouts());
 
-    return this._getWorkouts();
+    localStorage.setItem('workouts', this._getWorkouts());
   }
   get getMapCoords() {
     return this.#mapCoords;
@@ -160,7 +160,7 @@ class App {
     // for (const workout of this._getWorkouts()) {
     //   markers = [...markers, this._renderWorkoutMarker(workout)];
     // }
-    this._getWorkouts().forEach(workout => this._renderWorkoutMarker(workout));
+    this._getWorkouts()?.forEach(workout => this._renderWorkoutMarker(workout));
   }
   _showForm(mapEvent) {
     form.classList.remove('hidden');
@@ -202,7 +202,8 @@ class App {
           month: 'long',
         }).format(new Date(newWorkout.date))}
       `
-      );
+      )
+      .openPopup();
   }
   _renderWorkout(workout) {
     const html = ` <li class="workout workout--${workout.type}" data-id=${
@@ -312,8 +313,6 @@ class App {
     });
 
     const { type, distance, duration, cadence, elevation } = inputsValues;
-    console.log(elevation);
-    console.log(inputsValues);
 
     const newWorkout =
       type === 'running'
@@ -335,10 +334,15 @@ class App {
     localStorage.setItem('workouts', JSON.stringify(this._getWorkouts()));
     this._renderWorkout(newWorkout);
   }
+  _setLocalStorage() {
+    const data = this.#workoutsList;
+    localStorage.setItem('workouts', JSON.stringify(data) || '[]');
+  }
   _getLocalStorage() {
-    const data = JSON.parse(localStorage.getItem('workouts'));
+    const data = localStorage.getItem('workouts');
     if (!data) return;
-    this.#workoutsList = data;
+    this.#workoutsList = JSON.parse(data);
+    this._renderWorkouts();
   }
 }
 //REFACTORING FOR PROJECT ARCHITECTURE

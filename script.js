@@ -158,7 +158,7 @@ class App {
       iconUrl: 'icon.png',
       iconSize: [38, 38],
     });
-    const mp = new L.Marker(this.#mapCoords, { icon: myIcon });
+    const mp = new L.Marker(newWorkout.coords, { icon: myIcon });
     mp.addTo(this.#map)
       .bindPopup(
         L.popup({

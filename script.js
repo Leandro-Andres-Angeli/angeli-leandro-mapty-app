@@ -10,6 +10,7 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+const btnReset = document.querySelector('.btn-reset');
 //LECTURE
 //Using geolocation API
 //LECTURE
@@ -61,7 +62,6 @@ class Running extends Workout {
     this.calcPace();
   }
   calcPace() {
-    console.log(this.getDuration);
     return (this.pace = this.getDuration / this.getDistance);
   }
 }
@@ -95,25 +95,26 @@ class App {
     });
     this._getLocalStorage();
     this._setLocalStorage();
+    this._toggleDeleteBtn();
 
     // this.#workoutsList = JSON.parse(localStorage.getItem('workouts'));
     // (!localStorage.getItem('workouts') &&
     //   localStorage.setItem('workouts', JSON.stringify([]))) ||
     // localStorage.getItem('workouts', JSON.stringify([]));
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+    btnReset.addEventListener('click', this._resetWorkouts.bind(this));
+  }
+  _toggleDeleteBtn() {
+    this.#workoutsList.length > 0
+      ? btnReset.classList.remove('hidden')
+      : btnReset.classList.add('hidden');
   }
   _moveToPopup(e) {
     if (e.target.closest('li') !== null) {
-      // console.log(
-      //   this._getWorkouts().find(
-      //     workout => workout.id == e.target.closest('li').dataset.id
-      //   )
-      // );
       const { coords } = this._getWorkouts().find(
         workout => workout.id == e.target.closest('li').dataset.id
       );
       this.#map.setView(coords, 30, { pan: { animate: true, duration: 2 } });
-      console.log('el coords', coords);
     }
   }
 
@@ -134,7 +135,6 @@ class App {
     return this.#workoutsList;
   }
   _saveWorkout(workout) {
-    console.log(this);
     this.#workoutsList = [...this._getWorkouts(), workout];
 
     localStorage.setItem('workouts', this._getWorkouts());
@@ -143,7 +143,6 @@ class App {
     return this.#mapCoords;
   }
   _loadMap(pos) {
-    console.log(pos);
     const { latitude, longitude } = pos.coords;
 
     this.#mapCoords = [latitude, longitude];
@@ -156,14 +155,14 @@ class App {
     }).addTo(this.#map);
 
     this.#map.on('click', mapEvent => this._showForm.call(this, mapEvent));
-    // let markers = [];
-    // for (const workout of this._getWorkouts()) {
-    //   markers = [...markers, this._renderWorkoutMarker(workout)];
-    // }
-    this._getWorkouts()?.forEach(workout => this._renderWorkoutMarker(workout));
+
+    this._getWorkouts() &&
+      this._getWorkouts().forEach(workout =>
+        this._renderWorkoutMarker(workout)
+      );
   }
   _showForm(mapEvent) {
-    form.classList.remove('hidden');
+    form.classList.toggle('hidden');
     inputDistance.focus();
     const { lat, lng } = mapEvent.latlng;
     this.#mapCoords = [lat, lng];
@@ -180,7 +179,23 @@ class App {
       iconUrl: 'icon.png',
       iconSize: [38, 38],
     });
-    const mp = new L.Marker(newWorkout.coords, { icon: myIcon });
+    const mp = new L.Marker(newWorkout.coords, {
+      icon: myIcon,
+      riseOnHover: true,
+      draggable: true,
+    });
+
+    // mp.bindPopup(
+    //   `${(newWorkout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
+    //     newWorkout.type.slice(0, 1).toUpperCase() + newWorkout.type.slice(1)
+    //   } on
+    //     ${new Intl.DateTimeFormat('en-US', {
+    //       year: 'numeric',
+    //       month: 'long',
+    //     }).format(new Date(newWorkout.date))}
+
+    //   `
+    // );
     mp.addTo(this.#map)
       .bindPopup(
         L.popup({
@@ -193,17 +208,18 @@ class App {
           className: `${newWorkout.type}-popup `,
         })
       )
+
       .setPopupContent(
         `${(newWorkout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
           newWorkout.type.slice(0, 1).toUpperCase() + newWorkout.type.slice(1)
         } on
-        ${new Intl.DateTimeFormat('en-US', {
-          year: 'numeric',
-          month: 'long',
-        }).format(new Date(newWorkout.date))}
-      `
-      )
-      .openPopup();
+      ${new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+      }).format(new Date(newWorkout.date))}
+
+    `
+      );
   }
   _renderWorkout(workout) {
     const html = ` <li class="workout workout--${workout.type}" data-id=${
@@ -257,33 +273,6 @@ class App {
     this._getWorkouts().length > 0 &&
       this._getWorkouts().forEach(workout => {
         this._renderWorkout(workout);
-        // var myIcon = L.icon({
-        //   iconUrl: 'icon.png',
-        //   iconSize: [38, 38],
-        // });
-        // const mp = new L.Marker(workout.coords, { icon: myIcon });
-        // mp.addTo(this.#map)
-        //   .bindPopup(
-        //     L.popup({
-        //       maxWidth: 250,
-        //       maxHeight: 200,
-        //       autoClose: false,
-        //       keepInView: true,
-        //       closeOnClick: true,
-
-        //       className: `${workout.type}-popup }`,
-        //     })
-        //   )
-        //   .setPopupContent(
-        //     `${(workout.getType === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
-        //       workout.getType.slice(0, 1).toUpperCase() +
-        //       workout.getType.slice(1)
-        //     } on ${new Intl.DateTimeFormat('en-US', {
-        //       year: 'numeric',
-        //       month: 'long',
-        //     }).format(workout.getDate)} `
-        //   )
-        //   .openPopup();
       });
   }
   _hideform(form) {
@@ -297,7 +286,6 @@ class App {
   _newWorkout(e) {
     const validInputs = (...inputs) =>
       inputs.every(inp => {
-        console.log(inp);
         return Number.isFinite(inp) && Number(inp) > 0;
       });
     e.preventDefault();
@@ -333,6 +321,7 @@ class App {
     this._toggleElevationField();
     localStorage.setItem('workouts', JSON.stringify(this._getWorkouts()));
     this._renderWorkout(newWorkout);
+    this._toggleDeleteBtn();
   }
   _setLocalStorage() {
     const data = this.#workoutsList;
@@ -343,6 +332,23 @@ class App {
     if (!data) return;
     this.#workoutsList = JSON.parse(data);
     this._renderWorkouts();
+  }
+  _reset() {
+    localStorage.removeItem('workouts');
+    location.reload();
+  }
+  _resetWorkouts() {
+    const resetWorkouts = confirm('delete all workouts ??');
+    if (resetWorkouts) {
+      this.#workoutsList = [];
+      alert('all workouts deleted ');
+      this._setLocalStorage();
+      this._getLocalStorage();
+      document
+        .querySelectorAll('.workout')
+        .forEach(workout => workout.remove());
+      this._toggleDeleteBtn();
+    }
   }
 }
 //REFACTORING FOR PROJECT ARCHITECTURE

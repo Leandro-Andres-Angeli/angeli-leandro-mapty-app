@@ -83,6 +83,7 @@ class App {
   #mapCoords;
   #workoutsList;
   #map;
+
   constructor() {
     // (() => {
 
@@ -102,12 +103,20 @@ class App {
     //   localStorage.setItem('workouts', JSON.stringify([]))) ||
     // localStorage.getItem('workouts', JSON.stringify([]));
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+
+    containerWorkouts.addEventListener(
+      'dblclick',
+      this._editWorkout.bind(this)
+    );
     btnReset.addEventListener('click', this._resetWorkouts.bind(this));
   }
   _toggleDeleteBtn() {
-    this.#workoutsList.length > 0
+    this.#workoutsList?.length > 0
       ? btnReset.classList.remove('hidden')
       : btnReset.classList.add('hidden');
+  }
+  _checkIfTargetIsLi(e) {
+    return e.target.closest('li') !== null || e.target.closest.tagName === 'LI';
   }
   _moveToPopup(e) {
     if (e.target.closest('li') !== null) {
@@ -118,6 +127,24 @@ class App {
     }
   }
 
+  _editWorkout(e) {
+    console.log(e);
+    console.log(this.editWorkoutBoolean);
+    this._checkIfTargetIsLi(e)
+      ? this._setEditable(
+          e.target.querySelector('li') || e.target.closest('li')
+        )
+      : console.log('false');
+    console.log(this);
+
+    // this._changeEditBoolean.bind(this);
+  }
+  _setEditable(li) {
+    const liEl = li;
+    const booleanEditable = JSON.parse(liEl.dataset.editable);
+    console.log(booleanEditable);
+    liEl.dataset.editable = !booleanEditable;
+  }
   _getPosition() {
     return navigator.geolocation
       ? navigator.geolocation.getCurrentPosition(
@@ -185,17 +212,6 @@ class App {
       draggable: true,
     });
 
-    // mp.bindPopup(
-    //   `${(newWorkout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
-    //     newWorkout.type.slice(0, 1).toUpperCase() + newWorkout.type.slice(1)
-    //   } on
-    //     ${new Intl.DateTimeFormat('en-US', {
-    //       year: 'numeric',
-    //       month: 'long',
-    //     }).format(new Date(newWorkout.date))}
-
-    //   `
-    // );
     mp.addTo(this.#map)
       .bindPopup(
         L.popup({
@@ -224,7 +240,7 @@ class App {
   _renderWorkout(workout) {
     const html = ` <li class="workout workout--${workout.type}" data-id=${
       workout.id
-    }>
+    }  data-editable =${false}>
     <h2 class="workout__title">  ${
       workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
     } on ${new Intl.DateTimeFormat('en-US', {
@@ -284,11 +300,11 @@ class App {
   }
 
   _newWorkout(e) {
+    e.preventDefault();
     const validInputs = (...inputs) =>
       inputs.every(inp => {
         return Number.isFinite(inp) && Number(inp) > 0;
       });
-    e.preventDefault();
 
     const inputs = [...e.target.querySelectorAll('.form__input')];
     let inputsValues = {};

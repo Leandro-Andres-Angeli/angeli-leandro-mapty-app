@@ -145,14 +145,15 @@ class App {
       console.log(workout.id !== Number(e.closest('li').dataset.id));
       return workout.id !== Number(e.closest('li').dataset.id);
     });
-    const updateDOM = callback => {
+    const updateWorkouts = callback => {
       document.querySelector('.workouts').innerHTML = '';
       callback();
+      this._setLocalStorage();
     };
     // this.#workoutsList.forEach(workout => {
     //   this._renderWorkouts(workout);
     // });
-    updateDOM(() => this._renderWorkouts());
+    updateWorkouts(() => this._renderWorkouts());
     console.log(this._getWorkouts());
   }
   _handleSingleWorkout(e) {
@@ -166,10 +167,18 @@ class App {
           this._deleteSingleWorkout(e.target);
           break;
         case 'edit__btn':
-          console.log('edit');
+          // this._handleBtnContainerVisibility(
+          //   e.target.closest('.btn_container'),
+          //   'remove'
+          // );
+          console.log('edit__btn');
           break;
         case 'cancel__btn':
-          console.log('cancel edit');
+          console.log(e.target.closest('.btn_container'));
+          this._handleBtnContainerVisibility(
+            e.target.closest('.btn_container'),
+            'add'
+          );
           break;
 
         default:
@@ -191,16 +200,21 @@ class App {
 
     // this._changeEditBoolean.bind(this);
   }
+  _handleBtnContainerVisibility = (btnContainerEl, action) => {
+    btnContainerEl.classList[action]('removed');
+    setTimeout(() => {
+      btnContainerEl.classList[action]('hidden');
+    }, 200);
+  };
   _setEditable(li) {
     const liEl = li;
     const booleanEditable = JSON.parse(liEl.dataset.editable);
     console.log(booleanEditable);
     liEl.dataset.editable = !booleanEditable;
-
-    liEl.querySelector('.btn_container').classList.toggle('removed');
-    setTimeout(() => {
-      liEl.querySelector('.btn_container').classList.toggle('hidden');
-    }, 200);
+    this._handleBtnContainerVisibility(
+      liEl.querySelector('.btn_container'),
+      'toggle'
+    );
   }
   _getPosition() {
     return navigator.geolocation

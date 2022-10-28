@@ -130,7 +130,7 @@ class App {
   _editWorkout(e) {
     console.log(e);
     console.log(this.editWorkoutBoolean);
-    document.querySelectorAll('.btn_container .btn').forEach(editBtn => {
+    e.target.querySelectorAll('.btn_container .btn').forEach(editBtn => {
       editBtn.classList.toggle('hidden');
     });
 

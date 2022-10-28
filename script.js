@@ -130,6 +130,10 @@ class App {
   _editWorkout(e) {
     console.log(e);
     console.log(this.editWorkoutBoolean);
+    document.querySelectorAll('.btn_container .btn').forEach(editBtn => {
+      editBtn.classList.toggle('hidden');
+    });
+
     this._checkIfTargetIsLi(e)
       ? this._setEditable(
           e.target.querySelector('li') || e.target.closest('li')
@@ -281,6 +285,17 @@ class App {
       workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
     }</span>
     <span class="workout__unit">m</span>
+
+  </div>
+  <div class='btn_container'>
+  <button class="btn edit__btn hidden"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+  </button>
+  <button class="btn delete__btn hidden"><i class="fa fa-trash-o" aria-hidden="true"></i>
+  </button>
+  <button class="btn cancel_edit_btn hidden">
+  <i class="fa fa-times" aria-hidden="true"></i>
+
+  </button>
   </div>
     </li>`;
     document.querySelector('.workouts').insertAdjacentHTML('beforeend', html);

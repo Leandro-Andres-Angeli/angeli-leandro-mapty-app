@@ -165,6 +165,7 @@ class App {
       switch (btnClasses) {
         case 'delete__btn':
           this._deleteSingleWorkout(e.target);
+          this._blockMapActions(-1);
           break;
         case 'edit__btn':
           // this._handleBtnContainerVisibility(

@@ -11,7 +11,7 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const btnReset = document.querySelector('.btn-reset');
-const btnDeleteWorkout = document.querySelector('.delete__btn');
+// const btnDeleteWorkout = document.querySelectorAll('.delete__btn');
 //LECTURE
 //Using geolocation API
 //LECTURE
@@ -104,7 +104,11 @@ class App {
     //   localStorage.setItem('workouts', JSON.stringify([]))) ||
     // localStorage.getItem('workouts', JSON.stringify([]));
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+    containerWorkouts.addEventListener('click', e => {
+      this._handleSingleWorkout(e);
+    });
 
+    // btnDeleteWorkout.addEventListener('click', this._handleSingleWorkout(this));
     containerWorkouts.addEventListener(
       'dblclick',
       this._editWorkout.bind(this)
@@ -125,6 +129,29 @@ class App {
         workout => workout.id == e.target.closest('li').dataset.id
       );
       this.#map.setView(coords, 30, { pan: { animate: true, duration: 2 } });
+    }
+  }
+  _handleSingleWorkout(e) {
+    const btnClasses = e.target.closest('button')?.classList[1];
+    if (!e.target.closest('button')?.classList.contains('btn')) {
+      return null;
+    }
+    if (e.target.closest('button')?.classList.contains('btn')) {
+      switch (btnClasses) {
+        case 'delete__btn':
+          console.log('delete');
+          break;
+        case 'edit__btn':
+          console.log('edit');
+          break;
+        case 'cancel__btn':
+          console.log('cancel edit');
+          break;
+
+        default:
+          return null;
+          break;
+      }
     }
   }
 
@@ -291,11 +318,12 @@ class App {
 
   </div>
   <div class='btn_container  hidden removed'>
-  <button class="btn edit__btn"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+  <button class="btn edit__btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+
   </button>
   <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>
   </button>
-  <button class="btn cancel__edit_btn ">
+  <button class="btn cancel__btn ">
   <i class="fa fa-times" aria-hidden="true"></i>
 
   </button>

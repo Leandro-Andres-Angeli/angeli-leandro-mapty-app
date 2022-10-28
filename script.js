@@ -11,6 +11,76 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const btnReset = document.querySelector('.btn-reset');
+//   <h2 class="workout__title">  ${
+//     workout.type.slice(0, 1).toUpperCase() + workoutToEditData.type.slice(1)
+//   } on ${new Intl.DateTimeFormat('en-US', {
+//     year: 'numeric',
+//     month: 'long',
+//   }).format(workoutToEditData.getDate)}
+// </h2>
+//   <div class="workout__details">
+//     <span class="workout__icon"> ${
+//       (workoutToEditData.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
+//     } </span>
+//     <span class="workout__value">${workoutToEditData.distance}</span>
+//     <span class="workout__unit">km</span>
+//   </div>
+//   <div class="workout__details">
+//     <span class="workout__icon">⏱</span>
+//     <span class="workout__value">${workoutToEditData.duration}</span>
+//     <span class="workout__unit">${
+//       (workoutToEditData.type === 'running' && 'min') || 'km/h'
+//     }</span>
+//   </div>
+//   <div class="workout__details">
+//   <span class="workout__icon">⚡️</span>
+//   <span class="workout__value">${
+//     // (workout.type === 'running' &&)
+//     workoutToEditData.pace?.toFixed(2) || workoutToEditData.speed?.toFixed(2)
+//   }</span>
+//   <span class="workout__unit"> ${
+//     (workoutToEditData.type === 'running' && 'min/km') || 'km/h'
+//   }</span>
+// </div>
+// <div class="workout__details">
+//   <span class="workout__icon">
+//   ${(workoutToEditData.type === 'running' && '🦶') || '⛰'}
+
+//   </span>
+//   <span class="workout__value"> ${
+//     workoutToEditData.cadence?.toFixed(2) ||
+//     workoutToEditData.elevantionGain?.toFixed(2)
+//   }</span>
+//   <span class="workout__unit">m</span>
+
+// </div>
+// <div class='btn_container  hidden removed'>
+// <button class="btn edit__btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+
+// </button>
+// <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>
+// </button>
+// <button class="btn cancel__btn ">
+// <i class="fa fa-times" aria-hidden="true"></i>
+
+// </button>
+// </div>
+const editForm = workoutToEditData => {
+  console.log(workoutToEditData);
+  return `<div>${workoutToEditData}</div>`;
+  // return ` <li class="workout workout--${workoutToEditData.type}" data-id=${workoutToEditData.id}  >
+  //     <form>
+  //     <select class="form__input form__input--type">
+  //     <option value="running">Running</option>
+  //     <option value="cycling">Cycling</option>
+  //   </select>
+  //   <div class="form__row">
+  //   <label class="form__label">Distance</label>
+  //   <input class="form__input form__input--distance" placeholder="km" defalutValue=${workoutToEditData.distance} />
+  // </div>
+  //     </form>
+  // </li>`;
+};
 // const btnDeleteWorkout = document.querySelectorAll('.delete__btn');
 //LECTURE
 //Using geolocation API
@@ -123,6 +193,11 @@ class App {
   _checkIfTargetIsLi(e) {
     return e.target.closest('li') !== null || e.target.closest.tagName === 'LI';
   }
+  _updateUi = (HTMLElement, callback) => {
+    HTMLElement.innerHTML = '';
+    callback();
+    this._setLocalStorage();
+  };
   _moveToPopup(e) {
     if (e.target.closest('li') !== null) {
       const { coords } = this._getWorkouts().find(
@@ -145,16 +220,29 @@ class App {
       console.log(workout.id !== Number(e.closest('li').dataset.id));
       return workout.id !== Number(e.closest('li').dataset.id);
     });
-    const updateWorkouts = callback => {
-      document.querySelector('.workouts').innerHTML = '';
-      callback();
-      this._setLocalStorage();
-    };
+
     // this.#workoutsList.forEach(workout => {
     //   this._renderWorkouts(workout);
     // });
-    updateWorkouts(() => this._renderWorkouts());
-    console.log(this._getWorkouts());
+    // (() => {
+    //   return this._updateUi(document.querySelector('.workouts'), () =>
+    //     this._renderWorkouts()
+    //   );
+    // })().bind(this);
+    this._updateUi(document.querySelector('.workouts'), () =>
+      this._renderWorkouts()
+    );
+    // console.log(this._getWorkouts());
+  }
+  _transformLiIntoForm(li) {
+    console.log('on');
+    li.insertAdjacentHTML('beforeend', editForm(li.dataset.id));
+  }
+  _editSingleWorkOut(li) {
+    // console.log('in');
+    // console.log(li);
+    // console.log(this);
+    this._updateUi(li, () => this._transformLiIntoForm(li));
   }
   _handleSingleWorkout(e) {
     const btnClasses = e.target.closest('button')?.classList[1];
@@ -168,11 +256,8 @@ class App {
           this._blockMapActions(-1);
           break;
         case 'edit__btn':
-          // this._handleBtnContainerVisibility(
-          //   e.target.closest('.btn_container'),
-          //   'remove'
-          // );
-          console.log('edit__btn');
+          this._editSingleWorkOut(e.target.closest('.workout'));
+          // console.log(e.target.closest('.workout'));
           break;
         case 'cancel__btn':
           console.log(e.target.closest('.btn_container'));
@@ -190,15 +275,13 @@ class App {
   }
 
   _editWorkout(e) {
-    console.log(e);
     this.editWorkoutBoolean;
 
     this._checkIfTargetIsLi(e)
       ? this._setEditable(
           e.target.querySelector('li') || e.target.closest('li')
         )
-      : console.log(e.target);
-    console.log(this);
+      : null;
 
     // this._changeEditBoolean.bind(this);
   }

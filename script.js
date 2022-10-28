@@ -146,7 +146,11 @@ class App {
     const booleanEditable = JSON.parse(liEl.dataset.editable);
     console.log(booleanEditable);
     liEl.dataset.editable = !booleanEditable;
-    liEl.querySelector('.btn_container').classList.toggle('hidden');
+
+    liEl.querySelector('.btn_container').classList.toggle('removed');
+    setTimeout(() => {
+      liEl.querySelector('.btn_container').classList.toggle('hidden');
+    }, 200);
   }
   _getPosition() {
     return navigator.geolocation
@@ -286,7 +290,7 @@ class App {
     <span class="workout__unit">m</span>
 
   </div>
-  <div class='btn_container  hidden'>
+  <div class='btn_container  hidden removed'>
   <button class="btn edit__btn"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
   </button>
   <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>

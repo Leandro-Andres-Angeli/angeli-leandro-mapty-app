@@ -311,6 +311,7 @@ footer {
 .btn_container .btn {
   color: white;
   font-size: 2rem;
+  cursor: pointer;
 }
 
 .edit__btn {

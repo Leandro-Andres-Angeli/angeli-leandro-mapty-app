@@ -179,6 +179,7 @@ class App {
             e.target.closest('.btn_container'),
             'add'
           );
+          document.documentElement.style.setProperty('--after-display', -1);
           break;
 
         default:
@@ -206,14 +207,24 @@ class App {
       btnContainerEl.classList[action]('hidden');
     }, 200);
   };
+  _blockMapActions(zIndexVal) {
+    document.documentElement.style.setProperty('--after-display', zIndexVal);
+  }
+
   _setEditable(li) {
     const liEl = li;
     const booleanEditable = JSON.parse(liEl.dataset.editable);
-    console.log(booleanEditable);
+
     liEl.dataset.editable = !booleanEditable;
     this._handleBtnContainerVisibility(
       liEl.querySelector('.btn_container'),
       'toggle'
+    );
+    this._blockMapActions(
+      liEl.querySelector('.btn_container').classList.contains('hidden') ===
+        false
+        ? -1
+        : 100
     );
   }
   _getPosition() {

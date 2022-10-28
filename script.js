@@ -129,10 +129,7 @@ class App {
 
   _editWorkout(e) {
     console.log(e);
-    console.log(this.editWorkoutBoolean);
-    e.target.querySelectorAll('.btn_container .btn').forEach(editBtn => {
-      editBtn.classList.toggle('hidden');
-    });
+    this.editWorkoutBoolean;
 
     this._checkIfTargetIsLi(e)
       ? this._setEditable(
@@ -148,6 +145,7 @@ class App {
     const booleanEditable = JSON.parse(liEl.dataset.editable);
     console.log(booleanEditable);
     liEl.dataset.editable = !booleanEditable;
+    liEl.querySelector('.btn_container').classList.toggle('hidden');
   }
   _getPosition() {
     return navigator.geolocation
@@ -287,12 +285,12 @@ class App {
     <span class="workout__unit">m</span>
 
   </div>
-  <div class='btn_container'>
-  <button class="btn edit__btn hidden"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+  <div class='btn_container  hidden'>
+  <button class="btn edit__btn"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
   </button>
-  <button class="btn delete__btn hidden"><i class="fa fa-trash-o" aria-hidden="true"></i>
+  <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>
   </button>
-  <button class="btn cancel_edit_btn hidden">
+  <button class="btn cancel_edit_btn ">
   <i class="fa fa-times" aria-hidden="true"></i>
 
   </button>

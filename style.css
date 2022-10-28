@@ -320,7 +320,7 @@ footer {
 .delete__btn {
   background-color: #e63946;
 }
-.cancel_edit_btn {
+.cancel__edit_btn {
   background-color: #2a9d8f;
 }
 @media (max-width: 600px) {

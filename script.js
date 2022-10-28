@@ -11,6 +11,7 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const btnReset = document.querySelector('.btn-reset');
+const btnDeleteWorkout = document.querySelector('.delete__btn');
 //LECTURE
 //Using geolocation API
 //LECTURE
@@ -135,7 +136,7 @@ class App {
       ? this._setEditable(
           e.target.querySelector('li') || e.target.closest('li')
         )
-      : console.log('false');
+      : console.log(e.target);
     console.log(this);
 
     // this._changeEditBoolean.bind(this);
@@ -290,7 +291,7 @@ class App {
   </button>
   <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>
   </button>
-  <button class="btn cancel_edit_btn ">
+  <button class="btn cancel__edit_btn ">
   <i class="fa fa-times" aria-hidden="true"></i>
 
   </button>

@@ -131,6 +131,30 @@ class App {
       this.#map.setView(coords, 30, { pan: { animate: true, duration: 2 } });
     }
   }
+  _deleteSingleWorkout(e) {
+    console.log(e.closest('li'));
+    console.log(this._getWorkouts());
+    console.log(Number(e.closest('li').dataset.id));
+    const confirmDelete = confirm(
+      "THIS WORKOUT WILL BE DELETED .DO YOU WAN'T TO PROCEED ??"
+    );
+    if (!confirmDelete) {
+      return;
+    }
+    this.#workoutsList = this.#workoutsList.filter(workout => {
+      console.log(workout.id !== Number(e.closest('li').dataset.id));
+      return workout.id !== Number(e.closest('li').dataset.id);
+    });
+    const updateDOM = callback => {
+      document.querySelector('.workouts').innerHTML = '';
+      callback();
+    };
+    // this.#workoutsList.forEach(workout => {
+    //   this._renderWorkouts(workout);
+    // });
+    updateDOM(() => this._renderWorkouts());
+    console.log(this._getWorkouts());
+  }
   _handleSingleWorkout(e) {
     const btnClasses = e.target.closest('button')?.classList[1];
     if (!e.target.closest('button')?.classList.contains('btn')) {
@@ -139,7 +163,7 @@ class App {
     if (e.target.closest('button')?.classList.contains('btn')) {
       switch (btnClasses) {
         case 'delete__btn':
-          console.log('delete');
+          this._deleteSingleWorkout(e.target);
           break;
         case 'edit__btn':
           console.log('edit');
@@ -150,7 +174,6 @@ class App {
 
         default:
           return null;
-          break;
       }
     }
   }

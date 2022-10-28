@@ -235,14 +235,20 @@ class App {
     // console.log(this._getWorkouts());
   }
   _transformLiIntoForm(li) {
-    console.log('on');
-    li.insertAdjacentHTML('beforeend', editForm(li.dataset.id));
+    // console.log('on');
+    // li.insertAdjacentHTML('beforeend', editForm(li.dataset.id));
+    // const input = document.createElement('input');
+    // const spans = li.querySelector('span');
+    // console.log(spans);
+    // console.log('on');
+    // li.replaceChild(input, spans);
   }
   _editSingleWorkOut(li) {
+    this._transformLiIntoForm(li);
     // console.log('in');
     // console.log(li);
     // console.log(this);
-    this._updateUi(li, () => this._transformLiIntoForm(li));
+    // this._updateUi(li, () => this._transformLiIntoForm(li));
   }
   _handleSingleWorkout(e) {
     const btnClasses = e.target.closest('button')?.classList[1];
@@ -404,36 +410,52 @@ class App {
       );
   }
   _renderWorkout(workout) {
+    const date = new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'numeric',
+      date: 'numeric',
+    }).format(workout.getDate);
+
+    const workoutDate = new Date(workout.date);
+
+    const formmatedDate = new Intl.DateTimeFormat('es-AR', {
+      year: 'numeric',
+
+      day: 'numeric',
+      month: '2-digit',
+    }).format(new Date(workout.date));
+    console.log(formmatedDate.toString());
+    // dafault-value=${formmatedDate}
+    const f = moment(workout.date).format('YYYY-MM-DD');
+    console.log(f);
     const html = ` <li class="workout workout--${workout.type}" data-id=${
       workout.id
     }  data-editable =${false}>
-    <h2 class="workout__title">  ${
+    <input class="workout__title" value=  ${
       workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
-    } on ${new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-    }).format(workout.getDate)} 
- </h2>
+    } on >
+ </input>
+ <input type='date' value=${f.toString()}></input>
     <div class="workout__details">
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
       } </span>
-      <span class="workout__value">${workout.distance}</span>
+      <input class="workout__value" value=${workout.distance}></input>
       <span class="workout__unit">km</span>
     </div>
     <div class="workout__details">
       <span class="workout__icon">⏱</span>
-      <span class="workout__value">${workout.duration}</span>
+      <input class="workout__value" value=${workout.duration}></input>
       <span class="workout__unit">${
         (workout.type === 'running' && 'min') || 'km/h'
       }</span>
     </div>
     <div class="workout__details">
     <span class="workout__icon">⚡️</span>
-    <span class="workout__value">${
+    <input class="workout__value" value=${
       // (workout.type === 'running' &&)
       workout.pace?.toFixed(2) || workout.speed?.toFixed(2)
-    }</span>
+    }></input>
     <span class="workout__unit"> ${
       (workout.type === 'running' && 'min/km') || 'km/h'
     }</span>
@@ -443,9 +465,9 @@ class App {
     ${(workout.type === 'running' && '🦶') || '⛰'}
     
     </span>
-    <span class="workout__value"> ${
+    <input class="workout__value" value= ${
       workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
-    }</span>
+    }></input>
     <span class="workout__unit">m</span>
 
   </div>
@@ -461,6 +483,63 @@ class App {
   </button>
   </div>
     </li>`;
+    //     const html = ` <li class="workout workout--${workout.type}" data-id=${
+    //       workout.id
+    //     }  data-editable =${false}>
+    //     <h2 class="workout__title">  ${
+    //       workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
+    //     } on ${new Intl.DateTimeFormat('en-US', {
+    //       year: 'numeric',
+    //       month: 'long',
+    //     }).format(workout.getDate)}
+    //  </h2>
+    //     <div class="workout__details">
+    //       <span class="workout__icon"> ${
+    //         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
+    //       } </span>
+    //       <span class="workout__value">${workout.distance}</span>
+    //       <span class="workout__unit">km</span>
+    //     </div>
+    //     <div class="workout__details">
+    //       <span class="workout__icon">⏱</span>
+    //       <span class="workout__value">${workout.duration}</span>
+    //       <span class="workout__unit">${
+    //         (workout.type === 'running' && 'min') || 'km/h'
+    //       }</span>
+    //     </div>
+    //     <div class="workout__details">
+    //     <span class="workout__icon">⚡️</span>
+    //     <span class="workout__value">${
+    //       // (workout.type === 'running' &&)
+    //       workout.pace?.toFixed(2) || workout.speed?.toFixed(2)
+    //     }</span>
+    //     <span class="workout__unit"> ${
+    //       (workout.type === 'running' && 'min/km') || 'km/h'
+    //     }</span>
+    //   </div>
+    //   <div class="workout__details">
+    //     <span class="workout__icon">
+    //     ${(workout.type === 'running' && '🦶') || '⛰'}
+
+    //     </span>
+    //     <span class="workout__value"> ${
+    //       workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
+    //     }</span>
+    //     <span class="workout__unit">m</span>
+
+    //   </div>
+    //   <div class='btn_container  hidden removed'>
+    //   <button class="btn edit__btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+
+    //   </button>
+    //   <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>
+    //   </button>
+    //   <button class="btn cancel__btn ">
+    //   <i class="fa fa-times" aria-hidden="true"></i>
+
+    //   </button>
+    //   </div>
+    //     </li>`;
     document.querySelector('.workouts').insertAdjacentHTML('beforeend', html);
   }
   _renderWorkouts() {

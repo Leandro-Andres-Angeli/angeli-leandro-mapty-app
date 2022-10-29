@@ -376,6 +376,18 @@ footer {
 .edit__workout__btn.removed {
   display: none;
 }
+input:out-of-range {
+  background-color: red;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  display: none;
+}
+input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+  /* Firefox */
+}
 @media (max-width: 600px) {
   :root {
     --section-padding: 1rem;

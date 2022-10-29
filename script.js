@@ -479,14 +479,14 @@ class App {
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
       } </span>
-      <input  readonly class="workout__value" style="width:${
+      <input  readonly class="workout__value"  type="number" style="width:${
         workout.distance.toString().length * 1.7
       }rem" value=${workout.distance}></input>
       <span class="workout__unit">km</span>
     </div>
     <div class="workout__details">
       <span class="workout__icon">⏱</span>
-      <input readonly class="workout__value" style="width:${
+      <input readonly class="workout__value" type="number"  style="width:${
         workout.duration.toString().length * 1.7
       }rem" value=${workout.duration}></input>
       <span class="workout__unit">${
@@ -495,7 +495,7 @@ class App {
     </div>
     <div class="workout__details">
     <span class="workout__icon">⚡️</span>
-    <input readonly  class="workout__value"  style="width:${
+    <input readonly  class="workout__value" type="number"  style="width:${
       workout.pace?.toFixed(2).length || workout.speed?.toFixed(2).length
     }rem"  value=${
       // (workout.type === 'running' &&)
@@ -510,7 +510,7 @@ class App {
     ${(workout.type === 'running' && '🦶') || '⛰'}
     
     </span>
-    <input readonly class="workout__value" style="width:${
+    <input readonly class="workout__value" type="number"  style="width:${
       workout.cadence?.toFixed(2).toString().length ||
       workout.elevantionGain?.toFixed(2).toString().length
     }rem" value= ${
@@ -521,7 +521,7 @@ class App {
     }</span>
     </div>
     </div>
-    <button class='edit__workout__btn  hidden removed' style="background-color:var(--color-brand--${
+    <button type='submit' class='edit__workout__btn  hidden removed' style="background-color:var(--color-brand--${
       workout.type === 'running' ? '2' : '1'
     })">edit workout</button>
    

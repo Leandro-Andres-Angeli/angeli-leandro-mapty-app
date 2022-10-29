@@ -242,8 +242,26 @@ class App {
       .closest('label')
       .removeAttribute('hidden');
 
-    li.querySelector('input[type="date"]').closest('label').style.display =
-      'block ruby';
+    // li.querySelector('input[type="date"]').closest('label').style.display =
+    //   'block ruby';
+    const defaultType = li
+      .querySelector('h2')
+      .textContent.toLowerCase()
+      .includes('running')
+      ? 'running'
+      : 'cycling';
+
+    li.querySelectorAll('option').forEach(option => {
+      option.value === defaultType && option.setAttribute('selected', true);
+    });
+    // .toLowercase()
+    // .includes('running')
+    // ? 'running'
+    // : 'cycling';
+    console.log(defaultType);
+    li.querySelectorAll('label').forEach(label => {
+      label.style.display = 'block ruby';
+    });
     this._handleVisibility(li.querySelector('.edit__workout__btn'), 'remove');
     this._handleVisibility(li.querySelector('h2'), 'add');
     // li.insertAdjacentHTML('beforeend', editForm(li.dataset.id));
@@ -446,8 +464,13 @@ class App {
     
  <form>   
  <div class='workout__details__container'>
- 
- <label hidden >Edit Date
+ <label hidden class="edit__workout__label">Type
+ <select class="form__input " style=" width:${workout.type.length + 2}rem">
+   <option value="running">Running</option>
+   <option value="cycling">Cycling</option>
+ </select>
+ </label>
+ <label hidden edit__workout__label >Edit Date
  <input type='date'  readonly style="width:${
    formmatedDateSelect.toString().length + 1
  }rem" value=${formmatedDateSelect.toString()}></input>

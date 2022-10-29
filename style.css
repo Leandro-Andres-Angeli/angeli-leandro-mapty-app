@@ -330,7 +330,22 @@ footer {
   font-size: 2rem;
   cursor: pointer;
 }
-
+/* WORKOUT LI STYLES */
+.workout input {
+  width: 5rem;
+  background-color: var(--color-dark--2);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 3px 4px;
+}
+.workout input[type='date'] {
+  width: 11rem;
+}
+.workout__details__container {
+  display: flex;
+}
+/* WORKOUT LI STYLES */
 .edit__btn {
   background-color: #3a86ff;
 }

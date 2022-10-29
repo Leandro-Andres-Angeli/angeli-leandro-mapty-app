@@ -410,7 +410,7 @@ class App {
       );
   }
   _renderWorkout(workout) {
-    const date = new Intl.DateTimeFormat('en-US', {
+    const dateString = new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'numeric',
       date: 'numeric',
@@ -426,33 +426,37 @@ class App {
     }).format(new Date(workout.date));
     console.log(formmatedDate.toString());
     // dafault-value=${formmatedDate}
-    const f = moment(workout.date).format('YYYY-MM-DD');
-    console.log(f);
+    const formmatedDateSelect = moment(workout.date).format('YYYY-MM-DD');
+
     const html = ` <li class="workout workout--${workout.type}" data-id=${
       workout.id
     }  data-editable =${false}>
-    <input class="workout__title" value=  ${
+    <form>
+    
+    <h2 class="workout__title" >
+    ${
       workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
-    } on >
- </input>
- <input type='date' value=${f.toString()}></input>
+    } on ${formmatedDate}
+ </h2>
+ <div class='workout__details__container'>
+ <input type='date' readonly value=${formmatedDateSelect.toString()}></input>
     <div class="workout__details">
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
       } </span>
-      <input class="workout__value" value=${workout.distance}></input>
+      <input  readonly class="workout__value" value=${workout.distance}></input>
       <span class="workout__unit">km</span>
     </div>
     <div class="workout__details">
       <span class="workout__icon">⏱</span>
-      <input class="workout__value" value=${workout.duration}></input>
+      <input readonly class="workout__value" value=${workout.duration}></input>
       <span class="workout__unit">${
         (workout.type === 'running' && 'min') || 'km/h'
       }</span>
     </div>
     <div class="workout__details">
     <span class="workout__icon">⚡️</span>
-    <input class="workout__value" value=${
+    <input readonly  class="workout__value" value=${
       // (workout.type === 'running' &&)
       workout.pace?.toFixed(2) || workout.speed?.toFixed(2)
     }></input>
@@ -465,11 +469,14 @@ class App {
     ${(workout.type === 'running' && '🦶') || '⛰'}
     
     </span>
-    <input class="workout__value" value= ${
+    <input readonly class="workout__value" value= ${
       workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
     }></input>
-    <span class="workout__unit">m</span>
-
+    <span class="workout__unit">  ${
+      (workout.type === 'running' && 'spm') || 'm'
+    }</span>
+    </div>
+    </form>
   </div>
   <div class='btn_container  hidden removed'>
   <button class="btn edit__btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>

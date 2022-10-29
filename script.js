@@ -439,24 +439,30 @@ class App {
     } on ${formmatedDate}
  </h2>
  <div class='workout__details__container'>
- <input type='date' readonly value=${formmatedDateSelect.toString()}></input>
+ <input type='date' readonly style="width:${formmatedDateSelect.toString()}rem" value=${formmatedDateSelect.toString()}></input>
     <div class="workout__details">
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
       } </span>
-      <input  readonly class="workout__value" value=${workout.distance}></input>
+      <input  readonly class="workout__value" style="width:${
+        workout.distance.toString().length * 1.7
+      }rem" value=${workout.distance}></input>
       <span class="workout__unit">km</span>
     </div>
     <div class="workout__details">
       <span class="workout__icon">⏱</span>
-      <input readonly class="workout__value" value=${workout.duration}></input>
+      <input readonly class="workout__value" style="width:${
+        workout.duration.toString().length * 1.7
+      }rem" value=${workout.duration}></input>
       <span class="workout__unit">${
         (workout.type === 'running' && 'min') || 'km/h'
       }</span>
     </div>
     <div class="workout__details">
     <span class="workout__icon">⚡️</span>
-    <input readonly  class="workout__value" value=${
+    <input readonly  class="workout__value"  style="width:${
+      workout.pace?.toFixed(2).length || workout.speed?.toFixed(2).length
+    }rem"  value=${
       // (workout.type === 'running' &&)
       workout.pace?.toFixed(2) || workout.speed?.toFixed(2)
     }></input>
@@ -469,7 +475,10 @@ class App {
     ${(workout.type === 'running' && '🦶') || '⛰'}
     
     </span>
-    <input readonly class="workout__value" value= ${
+    <input readonly class="workout__value" style="width:${
+      workout.cadence?.toFixed(2).toString().length ||
+      workout.elevantionGain?.toFixed(2).toString().length
+    }rem" value= ${
       workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
     }></input>
     <span class="workout__unit">  ${

@@ -234,8 +234,18 @@ class App {
     );
     // console.log(this._getWorkouts());
   }
-  _transformLiIntoForm(li) {
-    // console.log('on');
+  _setFormEditable(li) {
+    li.querySelectorAll('input').forEach(input => {
+      input.removeAttribute('readonly');
+    });
+    li.querySelector('input[type="date"]')
+      .closest('label')
+      .removeAttribute('hidden');
+
+    li.querySelector('input[type="date"]').closest('label').style.display =
+      'block ruby';
+    this._handleVisibility(li.querySelector('.edit__workout__btn'), 'remove');
+    this._handleVisibility(li.querySelector('h2'), 'add');
     // li.insertAdjacentHTML('beforeend', editForm(li.dataset.id));
     // const input = document.createElement('input');
     // const spans = li.querySelector('span');
@@ -244,11 +254,11 @@ class App {
     // li.replaceChild(input, spans);
   }
   _editSingleWorkOut(li) {
-    this._transformLiIntoForm(li);
+    this._setFormEditable(li);
     // console.log('in');
     // console.log(li);
     // console.log(this);
-    // this._updateUi(li, () => this._transformLiIntoForm(li));
+    // this._updateUi(li, () => this._setFormEditable(li));
   }
   _handleSingleWorkout(e) {
     const btnClasses = e.target.closest('button')?.classList[1];
@@ -267,10 +277,7 @@ class App {
           break;
         case 'cancel__btn':
           console.log(e.target.closest('.btn_container'));
-          this._handleBtnContainerVisibility(
-            e.target.closest('.btn_container'),
-            'add'
-          );
+          this._handleVisibility(e.target.closest('.btn_container'), 'add');
           document.documentElement.style.setProperty('--after-display', -1);
           break;
 
@@ -291,12 +298,14 @@ class App {
 
     // this._changeEditBoolean.bind(this);
   }
-  _handleBtnContainerVisibility = (btnContainerEl, action) => {
+  //LECTURE
+  _handleVisibility = (btnContainerEl, action) => {
     btnContainerEl.classList[action]('removed');
     setTimeout(() => {
       btnContainerEl.classList[action]('hidden');
     }, 200);
   };
+  //LECTURE
   _blockMapActions(zIndexVal) {
     document.documentElement.style.setProperty('--after-display', zIndexVal);
   }
@@ -306,10 +315,7 @@ class App {
     const booleanEditable = JSON.parse(liEl.dataset.editable);
 
     liEl.dataset.editable = !booleanEditable;
-    this._handleBtnContainerVisibility(
-      liEl.querySelector('.btn_container'),
-      'toggle'
-    );
+    this._handleVisibility(liEl.querySelector('.btn_container'), 'toggle');
     this._blockMapActions(
       liEl.querySelector('.btn_container').classList.contains('hidden') ===
         false
@@ -431,15 +437,21 @@ class App {
     const html = ` <li class="workout workout--${workout.type}" data-id=${
       workout.id
     }  data-editable =${false}>
-    <form>
-    
     <h2 class="workout__title" >
     ${
       workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
     } on ${formmatedDate}
  </h2>
+   
+    
+ <form>   
  <div class='workout__details__container'>
- <input type='date' readonly style="width:${formmatedDateSelect.toString()}rem" value=${formmatedDateSelect.toString()}></input>
+ 
+ <label hidden >Edit Date
+ <input type='date'  readonly style="width:${
+   formmatedDateSelect.toString().length + 1
+ }rem" value=${formmatedDateSelect.toString()}></input>
+ </label>
     <div class="workout__details">
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
@@ -485,6 +497,11 @@ class App {
       (workout.type === 'running' && 'spm') || 'm'
     }</span>
     </div>
+    </div>
+    <button class='edit__workout__btn  hidden removed' style="background-color:var(--color-brand--${
+      workout.type === 'running' ? '2' : '1'
+    })">edit workout</button>
+   
     </form>
   </div>
   <div class='btn_container  hidden removed'>

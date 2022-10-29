@@ -343,6 +343,7 @@ footer {
 .workout__details__container {
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 /* WORKOUT LI STYLES */
 .edit__btn {
@@ -353,6 +354,27 @@ footer {
 }
 .cancel__btn {
   background-color: #2a9d8f;
+}
+.edit__workout__btn {
+  color: white;
+  padding: 5px 10px;
+  text-transform: uppercase;
+  border-radius: 7px;
+  border: none;
+}
+
+.workout__title.hidden,
+.edit__workout__btn.hidden {
+  transform: translateY(-3rem);
+  height: 0;
+  padding: 0 2.25rem;
+  margin-bottom: 0;
+  opacity: 0;
+}
+
+.workout__title.removed,
+.edit__workout__btn.removed {
+  display: none;
 }
 @media (max-width: 600px) {
   :root {

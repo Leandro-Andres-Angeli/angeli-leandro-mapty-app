@@ -181,7 +181,7 @@ class App {
     // btnDeleteWorkout.addEventListener('click', this._handleSingleWorkout(this));
     containerWorkouts.addEventListener(
       'dblclick',
-      this._editWorkout.bind(this)
+      this._displayEditWorkoutMenu.bind(this)
     );
     btnReset.addEventListener('click', this._resetWorkouts.bind(this));
   }
@@ -305,8 +305,8 @@ class App {
     }
   }
 
-  _editWorkout(e) {
-    this.editWorkoutBoolean;
+  _displayEditWorkoutMenu(e) {
+    this.displayEditWorkoutMenuBoolean;
 
     this._checkIfTargetIsLi(e)
       ? this._setEditable(
@@ -331,9 +331,24 @@ class App {
   _setEditable(li) {
     const liEl = li;
     const booleanEditable = JSON.parse(liEl.dataset.editable);
+    liEl
+      .closest('ul')
+      .querySelectorAll('li')
+      .forEach(workout => {
+        // workout !== liEl ? this._handleVisibility(workout, 'remove') : null;
+        workout !== liEl
+          ? this._handleVisibility(
+              workout.querySelector('.btn_container'),
+              'add'
+            )
+          : this._handleVisibility(
+              liEl.querySelector('.btn_container'),
+              'toggle'
+            );
+      });
 
-    liEl.dataset.editable = !booleanEditable;
-    this._handleVisibility(liEl.querySelector('.btn_container'), 'toggle');
+    // liEl.dataset.editable = !booleanEditable;
+    // this._handleVisibility(liEl.querySelector('.btn_container'), 'toggle');
     this._blockMapActions(
       liEl.querySelector('.btn_container').classList.contains('hidden') ===
         false
@@ -481,7 +496,7 @@ class App {
       } </span>
       <input  readonly class="workout__value"  type="number" style="width:${
         workout.distance.toString().length * 1.7
-      }rem" value=${workout.distance}></input>
+      }rem"  step="any" value=${workout.distance}></input>
       <span class="workout__unit">km</span>
     </div>
     <div class="workout__details">

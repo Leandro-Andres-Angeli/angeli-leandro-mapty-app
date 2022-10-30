@@ -361,6 +361,7 @@ footer {
   text-transform: uppercase;
   border-radius: 7px;
   border: none;
+  margin: 15px;
 }
 
 .workout__title.hidden,

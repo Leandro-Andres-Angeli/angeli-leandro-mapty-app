@@ -234,13 +234,74 @@ class App {
     );
     // console.log(this._getWorkouts());
   }
-  _setFormEditable(li) {
+  _setFormNotEditable(li) {
+    console.log(li);
     li.querySelectorAll('input').forEach(input => {
-      input.removeAttribute('readonly');
+      input.setAttribute('readonly', true);
     });
     li.querySelector('input[type="date"]')
       .closest('label')
-      .removeAttribute('hidden');
+      .setAttribute('hidden', true);
+    this._handleVisibility(li.querySelector('.edit__workout__btn'), 'remove');
+    li.querySelectorAll('.edit__workout__label').forEach(label => {
+      label.style.display = 'none';
+    });
+    this._handleVisibility(li.querySelector('h2'), 'remove');
+    this._handleVisibility(li.querySelector('button'), 'add');
+    this._handleVisibility(li.querySelectorAll('h2')[1], 'add');
+    this._handleInputsStyles(
+      li.querySelectorAll('input'),
+      getComputedStyle(document.documentElement).getPropertyValue(
+        '--color-dark--2'
+      ),
+      'white'
+    );
+    // li.querySelectorAll('input').forEach(input => {
+    //   input.removeAttribute('readonly');
+    //   input.style.backgroundColor = getComputedStyle(
+    //     document.documentElement
+    //   ).getPropertyValue('--color-dark--2');
+    //   input.style.color = 'white';
+    // });
+  }
+
+  _handleInputsStyles(li, inputBackground, inputColor) {
+    li.forEach(input => {
+      console.log('in');
+      input.style.backgroundColor = inputBackground;
+      input.style.color = inputColor;
+    });
+  }
+  _handleInputsStyles(li, inputBackground, inputColor, attributeToRemove) {
+    li.forEach(input => {
+      console.log('in');
+      input.removeAttribute(attributeToRemove);
+      input.style.backgroundColor = inputBackground;
+      input.style.color = inputColor;
+    });
+  }
+  _setFormEditable(li) {
+    this._handleInputsStyles(
+      li.querySelectorAll('input'),
+      getComputedStyle(document.documentElement).getPropertyValue(
+        '--color-light--2'
+      ),
+      'black',
+      'readonly'
+    );
+    // li.querySelectorAll('input').forEach(input => {
+    //   input.removeAttribute('readonly');
+    //   input.style.backgroundColor = getComputedStyle(
+    //     document.documentElement
+    //   ).getPropertyValue('--color-light--2');
+    //   input.style.color = 'black';
+    // });
+    const datePicker = li.querySelector('input[type="date"]');
+    datePicker.closest('label').removeAttribute('hidden');
+    datePicker.style.backgroundColor = getComputedStyle(
+      document.documentElement
+    ).getPropertyValue('--color-light--2');
+    datePicker.style.color = 'black';
 
     // li.querySelector('input[type="date"]').closest('label').style.display =
     //   'block ruby';
@@ -264,6 +325,7 @@ class App {
     });
     this._handleVisibility(li.querySelector('.edit__workout__btn'), 'remove');
     this._handleVisibility(li.querySelector('h2'), 'add');
+    this._handleVisibility(li.querySelectorAll('h2')[1], 'remove');
     // li.insertAdjacentHTML('beforeend', editForm(li.dataset.id));
     // const input = document.createElement('input');
     // const spans = li.querySelector('span');
@@ -297,6 +359,7 @@ class App {
           console.log(e.target.closest('.btn_container'));
           this._handleVisibility(e.target.closest('.btn_container'), 'add');
           document.documentElement.style.setProperty('--after-display', -1);
+          this._setFormNotEditable(e.target.closest('li'));
           break;
 
         default:
@@ -455,8 +518,6 @@ class App {
       date: 'numeric',
     }).format(workout.getDate);
 
-    const workoutDate = new Date(workout.date);
-
     const formmatedDate = new Intl.DateTimeFormat('es-AR', {
       year: 'numeric',
 
@@ -475,6 +536,9 @@ class App {
       workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
     } on ${formmatedDate}
  </h2>
+ <h2 class="workout__title hidden removed" >
+ Edit Form
+</h2>
    
     
  <form>   
@@ -485,7 +549,7 @@ class App {
    <option value="cycling">Cycling</option>
  </select>
  </label>
- <label hidden edit__workout__label >Edit Date
+ <label class="  edit__workout__label " hidden>Edit Date
  <input type='date'  readonly style="width:${
    formmatedDateSelect.toString().length + 1
  }rem" value=${formmatedDateSelect.toString()}></input>
@@ -508,7 +572,7 @@ class App {
         (workout.type === 'running' && 'min') || 'km/h'
       }</span>
     </div>
-    <div class="workout__details">
+    <div class="workout__details  ${workout.pace ? 'pace' : 'speed'}">
     <span class="workout__icon">⚡️</span>
     <input readonly  class="workout__value" type="number"  style="width:${
       workout.pace?.toFixed(2).length || workout.speed?.toFixed(2).length

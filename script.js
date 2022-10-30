@@ -206,6 +206,105 @@ class App {
       this.#map.setView(coords, 30, { pan: { animate: true, duration: 2 } });
     }
   }
+  _returnWorkoutLi(workout) {
+    const formmatedDateSelect = moment(workout.date).format('YYYY-MM-DD');
+    const formmatedDate = new Intl.DateTimeFormat('es-AR', {
+      year: 'numeric',
+
+      day: 'numeric',
+      month: '2-digit',
+    }).format(new Date(workout.date));
+    return ` <li class="workout workout--${workout.type}" data-id=${
+      workout.id
+    }  data-editable =${false}>
+    <h2 class="workout__title" >
+    ${
+      workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
+    } on ${formmatedDate}
+ </h2>
+ <h2 class="workout__title hidden removed" >
+ Edit Form
+</h2>
+   
+    
+ <form>   
+ <div class='workout__details__container'>
+ <label hidden class="edit__workout__label">Type
+ <select class="form__input " style=" width:${workout.type.length + 2}rem">
+   <option value="running">Running</option>
+   <option value="cycling">Cycling</option>
+ </select>
+ </label>
+ <label class="  edit__workout__label " hidden>Edit Date
+ <input type='date'  readonly style="width:${
+   formmatedDateSelect.toString().length + 1
+ }rem" value=${formmatedDateSelect.toString()}></input>
+ </label>
+    <div class="workout__details">
+      <span class="workout__icon"> ${
+        (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
+      } </span>
+      <input  readonly class="workout__value"  type="number" style="width:${
+        workout.distance.toString().length * 1.7
+      }rem"  step="any" value=${workout.distance}></input>
+      <span class="workout__unit">km</span>
+    </div>
+    <div class="workout__details">
+      <span class="workout__icon">⏱</span>
+      <input readonly class="workout__value" type="number"  style="width:${
+        workout.duration.toString().length * 1.7
+      }rem" value=${workout.duration}></input>
+      <span class="workout__unit">${
+        (workout.type === 'running' && 'min') || 'km/h'
+      }</span>
+    </div>
+    <div class="workout__details  ${workout.pace ? 'pace' : 'speed'}">
+    <span class="workout__icon">⚡️</span>
+    <input readonly  class="workout__value" type="number"  style="width:${
+      workout.pace?.toFixed(2).length || workout.speed?.toFixed(2).length
+    }rem"  value=${
+      // (workout.type === 'running' &&)
+      workout.pace?.toFixed(2) || workout.speed?.toFixed(2)
+    }></input>
+    <span class="workout__unit"> ${
+      (workout.type === 'running' && 'min/km') || 'km/h'
+    }</span>
+  </div>
+  <div class="workout__details">
+    <span class="workout__icon">
+    ${(workout.type === 'running' && '🦶') || '⛰'}
+    
+    </span>
+    <input readonly class="workout__value" type="number"  style="width:${
+      workout.cadence?.toFixed(2).toString().length ||
+      workout.elevantionGain?.toFixed(2).toString().length
+    }rem" value= ${
+      workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
+    }></input>
+    <span class="workout__unit">  ${
+      (workout.type === 'running' && 'spm') || 'm'
+    }</span>
+    </div>
+    </div>
+    <button type='submit' class='edit__workout__btn  hidden removed' style="background-color:var(--color-brand--${
+      workout.type === 'running' ? '2' : '1'
+    })">edit workout</button>
+   
+    </form>
+  </div>
+  <div class='btn_container  hidden removed'>
+  <button class="btn edit__btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+
+  </button>
+  <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>
+  </button>
+  <button class="btn cancel__btn ">
+  <i class="fa fa-times" aria-hidden="true"></i>
+
+  </button>
+  </div>
+    </li>`;
+  }
   _deleteSingleWorkout(e) {
     console.log(e.closest('li'));
     console.log(this._getWorkouts());
@@ -236,26 +335,40 @@ class App {
   }
   _setFormNotEditable(li) {
     console.log(li);
-    li.querySelectorAll('input').forEach(input => {
-      input.setAttribute('readonly', true);
-    });
-    li.querySelector('input[type="date"]')
-      .closest('label')
-      .setAttribute('hidden', true);
-    this._handleVisibility(li.querySelector('.edit__workout__btn'), 'remove');
-    li.querySelectorAll('.edit__workout__label').forEach(label => {
-      label.style.display = 'none';
-    });
-    this._handleVisibility(li.querySelector('h2'), 'remove');
-    this._handleVisibility(li.querySelector('button'), 'add');
-    this._handleVisibility(li.querySelectorAll('h2')[1], 'add');
-    this._handleInputsStyles(
-      li.querySelectorAll('input'),
-      getComputedStyle(document.documentElement).getPropertyValue(
-        '--color-dark--2'
-      ),
-      'white'
+    const id = li.dataset.id;
+
+    let resetedLI = document.createElement('div');
+    // resetedLI.innerHTML = this._renderWorkout(
+    //   this._getWorkouts().find(workout => workout.id === Number(id))
+    // );
+    resetedLI.innerHTML = this._returnWorkoutLi(
+      this._getWorkouts().find(workout => workout.id === Number(id))
     );
+    li.outerHTML = resetedLI.outerHTML;
+
+    // li.closest('li').innerHTML = '<div>reset</div>';
+
+    // console.log(li);
+    // li.querySelectorAll('input').forEach(input => {
+    //   input.setAttribute('readonly', true);
+    // });
+    // li.querySelector('input[type="date"]')
+    //   .closest('label')
+    //   .setAttribute('hidden', true);
+    // this._handleVisibility(li.querySelector('.edit__workout__btn'), 'remove');
+    // li.querySelectorAll('.edit__workout__label').forEach(label => {
+    //   label.style.display = 'none';
+    // });
+    // this._handleVisibility(li.querySelector('h2'), 'remove');
+    // this._handleVisibility(li.querySelector('button'), 'add');
+    // this._handleVisibility(li.querySelectorAll('h2')[1], 'add');
+    // this._handleInputsStyles(
+    //   li.querySelectorAll('input'),
+    //   getComputedStyle(document.documentElement).getPropertyValue(
+    //     '--color-dark--2'
+    //   ),
+    //   'white'
+    // );
     // li.querySelectorAll('input').forEach(input => {
     //   input.removeAttribute('readonly');
     //   input.style.backgroundColor = getComputedStyle(
@@ -675,7 +788,10 @@ class App {
     //   </button>
     //   </div>
     //     </li>`;
-    document.querySelector('.workouts').insertAdjacentHTML('beforeend', html);
+    document
+      .querySelector('.workouts')
+      .insertAdjacentHTML('beforeend', this._returnWorkoutLi(workout));
+    // return html;
   }
   _renderWorkouts() {
     this._getWorkouts().length > 0 &&

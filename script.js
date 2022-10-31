@@ -513,15 +513,22 @@ class App {
       .forEach(workout => {
         // workout !== liEl ? this._handleVisibility(workout, 'remove') : null;
         workout !== liEl
-          ? this._handleVisibility(
+          ? (this._handleVisibility(
               workout.querySelector('.btn_container'),
               'add'
-            )
-          : this._handleVisibility(
+            ),
+            (workout.dataset.editable = false),
+            this._setFormNotEditable(workout))
+          : (this._handleVisibility(
               liEl.querySelector('.btn_container'),
               'toggle'
-            );
+            ),
+            (workout.dataset.editable = true));
       });
+
+    // [...liEl.closest('ul').querySelectorAll('li')].filter(li =>
+    //   li.dataset.editable == 'true' ? console.log(li) : null
+    // );
 
     // liEl.dataset.editable = !booleanEditable;
     // this._handleVisibility(liEl.querySelector('.btn_container'), 'toggle');

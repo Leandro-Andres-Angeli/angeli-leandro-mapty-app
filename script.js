@@ -229,9 +229,10 @@ class App {
    
     
  <form>   
- <div class='workout__details__container'>
-
-
+ <div class='wrapper' style='display: flex;
+ justify-content: space-between;
+ margin: 10px 0;'>
+ 
  <label hidden class="edit__workout__label">Type
  <select class="form__input " style=" width:${workout.type.length + 2}rem">
    <option value="running">Running</option>
@@ -243,7 +244,10 @@ class App {
  <input type='date'  readonly style="width:${
    formmatedDateSelect.toString().length + 1
  }rem" value=${formmatedDateSelect.toString()}></input>
- </label>
+ </label></div>
+ <div class='workout__details__container'>
+
+
     <div class="workout__details">
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'

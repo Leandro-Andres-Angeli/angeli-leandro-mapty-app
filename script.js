@@ -344,7 +344,7 @@ class App {
     resetedLI.innerHTML = this._returnWorkoutLi(
       this._getWorkouts().find(workout => workout.id === Number(id))
     );
-    li.outerHTML = resetedLI.outerHTML;
+    li.outerHTML = resetedLI.innerHTML;
 
     // li.closest('li').innerHTML = '<div>reset</div>';
 

@@ -63,9 +63,7 @@ body {
 
   display: flex;
 }
-.map-section {
-  position: relative;
-}
+
 .map-section::after {
   content: '';
   position: absolute;
@@ -85,9 +83,15 @@ a:visited {
 
 /* SIDEBAR */
 .section {
-  flex-basis: 50%;
+  /* flex: 1;
+
   flex-grow: 1;
-  min-height: 40rem;
+
+  min-height: 40rem; */
+}
+.map-section {
+  position: relative;
+  flex: 1 1 auto;
 }
 
 .sidebar {
@@ -95,6 +99,9 @@ a:visited {
   padding: var(--section-padding) var(--section-padding);
   display: flex;
   flex-direction: column;
+  max-width: 600px;
+  flex-shrink: 2;
+  /* flex-shrink: 2; */
 }
 
 .logo {
@@ -265,7 +272,6 @@ a:visited {
 
 /* MAP */
 #map {
-  flex: 1;
   height: 100%;
   background-color: var(--color-light--1);
 }

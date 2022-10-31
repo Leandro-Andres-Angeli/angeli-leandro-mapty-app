@@ -11,6 +11,7 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const btnReset = document.querySelector('.btn-reset');
+
 //   <h2 class="workout__title">  ${
 //     workout.type.slice(0, 1).toUpperCase() + workoutToEditData.type.slice(1)
 //   } on ${new Intl.DateTimeFormat('en-US', {
@@ -229,12 +230,15 @@ class App {
     
  <form>   
  <div class='workout__details__container'>
+
+
  <label hidden class="edit__workout__label">Type
  <select class="form__input " style=" width:${workout.type.length + 2}rem">
    <option value="running">Running</option>
    <option value="cycling">Cycling</option>
  </select>
  </label>
+
  <label class="  edit__workout__label " hidden>Edit Date
  <input type='date'  readonly style="width:${
    formmatedDateSelect.toString().length + 1
@@ -387,7 +391,6 @@ class App {
   }
   _handleInputsStyles(li, inputBackground, inputColor, attributeToRemove) {
     li.forEach(input => {
-      console.log('in');
       input.removeAttribute(attributeToRemove);
       input.style.backgroundColor = inputBackground;
       input.style.color = inputColor;
@@ -402,6 +405,7 @@ class App {
       'black',
       'readonly'
     );
+
     // li.querySelectorAll('input').forEach(input => {
     //   input.removeAttribute('readonly');
     //   input.style.backgroundColor = getComputedStyle(
@@ -662,18 +666,21 @@ class App {
    
     
  <form>   
- <div class='workout__details__container'>
+ 
  <label hidden class="edit__workout__label">Type
  <select class="form__input " style=" width:${workout.type.length + 2}rem">
    <option value="running">Running</option>
    <option value="cycling">Cycling</option>
  </select>
  </label>
- <label class="  edit__workout__label " hidden>Edit Date
+ <div class="  edit__workout___label__div " hidden>
+ <label class='edit__workout___label'>Edit Date
  <input type='date'  readonly style="width:${
    formmatedDateSelect.toString().length + 1
  }rem" value=${formmatedDateSelect.toString()}></input>
  </label>
+ 
+ </div>
     <div class="workout__details">
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'

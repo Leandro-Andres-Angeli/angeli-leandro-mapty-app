@@ -142,10 +142,12 @@ class App {
   }
   _singleWorkoutFormAddEvent(liForm) {
     liForm.addEventListener('submit', e => {
-      console.log('event');
       e.preventDefault();
-      e.stopPropagation();
-      this._updateWorkoutData(e);
+
+      const updatedWorkout = this._updateWorkoutData(e);
+      console.log('list updated');
+      this._setFormNotEditable(e.target.closest('li'));
+      this._setLocalStorage();
     });
   }
   _toggleDeleteBtn() {
@@ -296,10 +298,6 @@ class App {
         ? Running.prototype
         : Cycling.prototype;
     let updateObj = workoutToUpdate;
-    updateObj.__proto__ =
-      workoutToUpdate.type === 'running'
-        ? Running.prototype
-        : Cycling.prototype;
 
     const {
       date: { value: date },
@@ -309,34 +307,18 @@ class App {
     } = e.target;
     const cadenceOrElevation =
       e.target.cadence?.value || e.target.elevantionGain?.value;
-    console.log('date var ', date);
-    console.log('type var ', type);
-    console.log('type distance ', distance);
-    console.log('type elevation or cadence ', cadenceOrElevation);
+
     updateObj._editValues(
       type,
-      distance,
-      duration,
-      cadenceOrElevation,
-      date,
+      Number(distance),
+      Number(duration),
+      Number(cadenceOrElevation),
+      new Date(date),
       coords
     );
 
-    // let up = workoutToUpdate._editValues(
-    //   1,
-    //   2,
-    //   3,
-    //   4,
-    //   [1, 2]
-    //   distance,
-    // duration,
-    // cadenceOrElevation,
-    // new Date(date),
-    // coords
-    // );
-    // console.log(up);
     this._getWorkouts()[indexToUpdate] = updateObj;
-    // console.log(this);
+    return updateObj;
   }
   //importantComment
   _deleteSingleWorkout(e) {

@@ -111,7 +111,10 @@ class Workout {
 
     this.coords = coords;
   }
-
+  _editValues(distance, duration) {
+    this.distance = distance;
+    this.duration = duration;
+  }
   get getType() {
     return this.type;
   }
@@ -136,6 +139,11 @@ class Running extends Workout {
   calcPace() {
     return (this.pace = this.getDuration / this.getDistance);
   }
+  _editValues(distance, duration, cadence) {
+    super._editValues(distance, duration);
+    this.cadence = cadence;
+    this.calcPace();
+  }
 }
 class Cycling extends Workout {
   elevantionGain;
@@ -148,6 +156,11 @@ class Cycling extends Workout {
   }
   calcSpeed() {
     return (this.speed = this.getDistance / (this.getDuration / 60));
+  }
+  _editValues(distance, duration, elevantionGain) {
+    super._editValues(distance, duration);
+    this.elevantionGain = elevantionGain;
+    this.calcSpeed();
   }
 }
 
@@ -177,6 +190,13 @@ class App {
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
     containerWorkouts.addEventListener('click', e => {
       this._handleSingleWorkout(e);
+    });
+    containerWorkouts.querySelectorAll('li form').forEach(form => {
+      form.addEventListener('submit', e => {
+        // console.log('event');
+        e.preventDefault();
+        this._updateWorkoutData(e);
+      });
     });
 
     // btnDeleteWorkout.addEventListener('click', this._handleSingleWorkout(this));
@@ -234,14 +254,16 @@ class App {
  margin: 10px 0;'>
  
  <label hidden class="edit__workout__label">Type
- <select class="form__input " style=" width:${workout.type.length + 2}rem">
+ <select class="form__input "  name='type' style=" width:${
+   workout.type.length + 2
+ }rem">
    <option value="running">Running</option>
    <option value="cycling">Cycling</option>
  </select>
  </label>
 
  <label class="  edit__workout__label " hidden>Edit Date
- <input type='date'  readonly style="width:${
+ <input type='date' name='date' readonly style="width:${
    formmatedDateSelect.toString().length + 1
  }rem" value=${formmatedDateSelect.toString()}></input>
  </label></div>
@@ -252,14 +274,14 @@ class App {
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
       } </span>
-      <input  readonly class="workout__value"  type="number" style="width:${3}rem" max="500"  step="any" value=${
+      <input  name='distance' readonly class="workout__value"  type="number" style="width:${3}rem" max="500"  step="any" value=${
       workout.distance
     }></input>
       <span class="workout__unit">km</span>
     </div>
     <div class="workout__details">
       <span class="workout__icon">⏱</span>
-      <input readonly class="workout__value" type="number" style="width:${4}rem" max="999" value=${
+      <input name='duration' readonly class="workout__value" type="number" style="width:${4}rem" max="999" value=${
       workout.duration
     }></input>
       <span class="workout__unit">min
@@ -285,7 +307,7 @@ class App {
     <input readonly class="workout__value" type="number"  style="width:${
       workout.cadence?.toFixed(2).toString().length ||
       workout.elevantionGain?.toFixed(2).toString().length
-    }rem" value= ${
+    }rem" name='${workout.cadence || workout.elevantionGain}' value= ${
       workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
     }></input>
     <span class="workout__unit">  ${
@@ -312,6 +334,20 @@ class App {
   </div>
     </li>`;
   }
+  //importantComment
+  //WORKING ON UPDATE SINGLE WORKOUT
+  _updateWorkoutData(e) {
+    console.log('in function');
+    console.log('getting data to update in progress');
+    const id = Number(e.target.parentElement.dataset.id);
+    console.log(this._getWorkouts().find(workout => workout.id === Number(id)));
+    console.log(id);
+    console.log(e.target);
+    console.log(e.target.date.value);
+    console.log(e.target.type.value);
+    console.log(this);
+  }
+  //importantComment
   _deleteSingleWorkout(e) {
     console.log(e.closest('li'));
     console.log(this._getWorkouts());
@@ -341,7 +377,7 @@ class App {
     // console.log(this._getWorkouts());
   }
   _setFormNotEditable(li) {
-    console.log(li);
+    // console.log(li);
     const id = li.dataset.id;
 
     let resetedLI = document.createElement('div');
@@ -673,14 +709,16 @@ class App {
  <form>   
  
  <label hidden class="edit__workout__label">Type
- <select class="form__input " style=" width:${workout.type.length + 2}rem">
+ <select  name='type' class="form__input " style=" width:${
+   workout.type.length + 2
+ }rem">
    <option value="running">Running</option>
    <option value="cycling">Cycling</option>
  </select>
  </label>
  <div class="  edit__workout___label__div " hidden>
  <label class='edit__workout___label'>Edit Date
- <input type='date'  readonly style="width:${
+ <input name='date' type='date'  readonly style="width:${
    formmatedDateSelect.toString().length + 1
  }rem" value=${formmatedDateSelect.toString()}></input>
  </label>
@@ -690,7 +728,7 @@ class App {
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
       } </span>
-      <input  readonly class="workout__value"  type="number" style="width:${
+      <input name='distance' readonly class="workout__value"  type="number" style="width:${
         workout.distance.toString().length * 1.7
       }rem"  step="any" value=${workout.distance}></input>
       <span class="workout__unit">km</span>
@@ -721,7 +759,9 @@ class App {
     ${(workout.type === 'running' && '🦶') || '⛰'}
     
     </span>
-    <input readonly class="workout__value" type="number"  style="width:${
+    <input readonly  name='${
+      workout.cadence || workout.elevantionGain
+    }' class="workout__value" type="number"  style="width:${
       workout.cadence?.toFixed(2).toString().length ||
       workout.elevantionGain?.toFixed(2).toString().length
     }rem" value= ${

@@ -413,10 +413,7 @@ class App {
     li.querySelectorAll('option').forEach(option => {
       option.value === defaultType && option.setAttribute('selected', true);
     });
-    // .toLowercase()
-    // .includes('running')
-    // ? 'running'
-    // : 'cycling';
+
     console.log(defaultType);
     li.querySelectorAll('label').forEach(label => {
       label.style.display = 'block ruby';
@@ -424,19 +421,9 @@ class App {
     this._handleVisibility(li.querySelector('.edit__workout__btn'), 'remove');
     this._handleVisibility(li.querySelector('h2'), 'add');
     this._handleVisibility(li.querySelectorAll('h2')[1], 'remove');
-    // li.insertAdjacentHTML('beforeend', editForm(li.dataset.id));
-    // const input = document.createElement('input');
-    // const spans = li.querySelector('span');
-    // console.log(spans);
-    // console.log('on');
-    // li.replaceChild(input, spans);
   }
   _editSingleWorkOut(li) {
     this._setFormEditable(li);
-    // console.log('in');
-    // console.log(li);
-    // console.log(this);
-    // this._updateUi(li, () => this._setFormEditable(li));
   }
   _handleSingleWorkout(e) {
     const btnClasses = e.target.closest('button')?.classList[1];
@@ -475,8 +462,6 @@ class App {
           e.target.querySelector('li') || e.target.closest('li')
         )
       : null;
-
-    // this._changeEditBoolean.bind(this);
   }
   //LECTURE
   _handleVisibility = (btnContainerEl, action) => {
@@ -497,7 +482,6 @@ class App {
       .closest('ul')
       .querySelectorAll('li')
       .forEach(workout => {
-        // workout !== liEl ? this._handleVisibility(workout, 'remove') : null;
         workout !== liEl
           ? (this._handleVisibility(
               workout.querySelector('.btn_container'),
@@ -512,12 +496,6 @@ class App {
             (workout.dataset.editable = true));
       });
 
-    // [...liEl.closest('ul').querySelectorAll('li')].filter(li =>
-    //   li.dataset.editable == 'true' ? console.log(li) : null
-    // );
-
-    // liEl.dataset.editable = !booleanEditable;
-    // this._handleVisibility(liEl.querySelector('.btn_container'), 'toggle');
     this._blockMapActions(
       liEl.querySelector('.btn_container').classList.contains('hidden') ===
         false
@@ -618,12 +596,6 @@ class App {
       );
   }
   _renderWorkout(workout) {
-    // const dateString = new Intl.DateTimeFormat('en-US', {
-    //   year: 'numeric',
-    //   month: 'numeric',
-    //   date: 'numeric',
-    // }).format(workout.getDate);
-
     const formmatedDate = new Intl.DateTimeFormat('es-AR', {
       year: 'numeric',
 

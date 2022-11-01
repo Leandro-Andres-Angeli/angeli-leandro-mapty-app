@@ -364,6 +364,8 @@ footer {
   margin: 15px;
 }
 
+.speed.hidden,
+.pace.hidden,
 .workout__title.hidden,
 .edit__workout__btn.hidden {
   transform: translateY(-3rem);
@@ -373,6 +375,8 @@ footer {
   opacity: 0;
 }
 
+.speed.removed,
+.pace.removed,
 .workout__title.removed,
 .edit__workout__btn.removed {
   display: none;

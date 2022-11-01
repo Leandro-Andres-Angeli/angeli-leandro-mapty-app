@@ -252,19 +252,18 @@ class App {
       <span class="workout__icon"> ${
         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
       } </span>
-      <input  readonly class="workout__value"  type="number" style="width:${
-        workout.distance.toString().length * 1.7
-      }rem"  step="any" value=${workout.distance}></input>
+      <input  readonly class="workout__value"  type="number" style="width:${3}rem" max="500"  step="any" value=${
+      workout.distance
+    }></input>
       <span class="workout__unit">km</span>
     </div>
     <div class="workout__details">
       <span class="workout__icon">⏱</span>
-      <input readonly class="workout__value" type="number"  style="width:${
-        workout.duration.toString().length * 1.7
-      }rem" value=${workout.duration}></input>
-      <span class="workout__unit">${
-        (workout.type === 'running' && 'min') || 'km/h'
-      }</span>
+      <input readonly class="workout__value" type="number" style="width:${4}rem" max="999" value=${
+      workout.duration
+    }></input>
+      <span class="workout__unit">min
+      </span>
     </div>
     <div class="workout__details  ${workout.pace ? 'pace' : 'speed'}">
     <span class="workout__icon">⚡️</span>
@@ -410,6 +409,8 @@ class App {
       'readonly'
     );
 
+    const fieldToHide = li.querySelector('.pace') || li.querySelector('.speed');
+    this._handleVisibility(fieldToHide, 'add');
     // li.querySelectorAll('input').forEach(input => {
     //   input.removeAttribute('readonly');
     //   input.style.backgroundColor = getComputedStyle(

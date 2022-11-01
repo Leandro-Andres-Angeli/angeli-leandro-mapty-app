@@ -12,75 +12,9 @@ const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const btnReset = document.querySelector('.btn-reset');
 
-//   <h2 class="workout__title">  ${
-//     workout.type.slice(0, 1).toUpperCase() + workoutToEditData.type.slice(1)
-//   } on ${new Intl.DateTimeFormat('en-US', {
-//     year: 'numeric',
-//     month: 'long',
-//   }).format(workoutToEditData.getDate)}
-// </h2>
-//   <div class="workout__details">
-//     <span class="workout__icon"> ${
-//       (workoutToEditData.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
-//     } </span>
-//     <span class="workout__value">${workoutToEditData.distance}</span>
-//     <span class="workout__unit">km</span>
-//   </div>
-//   <div class="workout__details">
-//     <span class="workout__icon">⏱</span>
-//     <span class="workout__value">${workoutToEditData.duration}</span>
-//     <span class="workout__unit">${
-//       (workoutToEditData.type === 'running' && 'min') || 'km/h'
-//     }</span>
-//   </div>
-//   <div class="workout__details">
-//   <span class="workout__icon">⚡️</span>
-//   <span class="workout__value">${
-//     // (workout.type === 'running' &&)
-//     workoutToEditData.pace?.toFixed(2) || workoutToEditData.speed?.toFixed(2)
-//   }</span>
-//   <span class="workout__unit"> ${
-//     (workoutToEditData.type === 'running' && 'min/km') || 'km/h'
-//   }</span>
-// </div>
-// <div class="workout__details">
-//   <span class="workout__icon">
-//   ${(workoutToEditData.type === 'running' && '🦶') || '⛰'}
-
-//   </span>
-//   <span class="workout__value"> ${
-//     workoutToEditData.cadence?.toFixed(2) ||
-//     workoutToEditData.elevantionGain?.toFixed(2)
-//   }</span>
-//   <span class="workout__unit">m</span>
-
-// </div>
-// <div class='btn_container  hidden removed'>
-// <button class="btn edit__btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-
-// </button>
-// <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>
-// </button>
-// <button class="btn cancel__btn ">
-// <i class="fa fa-times" aria-hidden="true"></i>
-
-// </button>
-// </div>
 const editForm = workoutToEditData => {
   console.log(workoutToEditData);
   return `<div>${workoutToEditData}</div>`;
-  // return ` <li class="workout workout--${workoutToEditData.type}" data-id=${workoutToEditData.id}  >
-  //     <form>
-  //     <select class="form__input form__input--type">
-  //     <option value="running">Running</option>
-  //     <option value="cycling">Cycling</option>
-  //   </select>
-  //   <div class="form__row">
-  //   <label class="form__label">Distance</label>
-  //   <input class="form__input form__input--distance" placeholder="km" defalutValue=${workoutToEditData.distance} />
-  // </div>
-  //     </form>
-  // </li>`;
 };
 // const btnDeleteWorkout = document.querySelectorAll('.delete__btn');
 //LECTURE
@@ -127,6 +61,9 @@ class Workout {
   get getDuration() {
     return this.duration;
   }
+  _testFunc() {
+    console.log('test function');
+  }
 }
 class Running extends Workout {
   cadence;
@@ -157,6 +94,7 @@ class Cycling extends Workout {
   calcSpeed() {
     return (this.speed = this.getDistance / (this.getDuration / 60));
   }
+
   _editValues(distance, duration, elevantionGain) {
     super._editValues(distance, duration);
     this.elevantionGain = elevantionGain;
@@ -191,20 +129,23 @@ class App {
     containerWorkouts.addEventListener('click', e => {
       this._handleSingleWorkout(e);
     });
-    containerWorkouts.querySelectorAll('li form').forEach(form => {
-      form.addEventListener('submit', e => {
-        // console.log('event');
-        e.preventDefault();
-        this._updateWorkoutData(e);
-      });
-    });
-
+    this._singleWorkoutFormAddEvent();
     // btnDeleteWorkout.addEventListener('click', this._handleSingleWorkout(this));
     containerWorkouts.addEventListener(
       'dblclick',
       this._displayEditWorkoutMenu.bind(this)
     );
     btnReset.addEventListener('click', this._resetWorkouts.bind(this));
+  }
+  _singleWorkoutFormAddEvent() {
+    return containerWorkouts.querySelectorAll('li form').forEach(form => {
+      form.addEventListener('submit', e => {
+        console.log('event');
+        e.preventDefault();
+        e.stopPropagation();
+        this._updateWorkoutData(e);
+      });
+    });
   }
   _toggleDeleteBtn() {
     this.#workoutsList?.length > 0
@@ -304,7 +245,9 @@ class App {
     ${(workout.type === 'running' && '🦶') || '⛰'}
     
     </span>
-    <input readonly class="workout__value" type="number"  style="width:${
+    <input readonly class="workout__value" type="number" name='${
+      workout.cadence ? 'cadence' : 'elevantionGain'
+    }'  style="width:${
       workout.cadence?.toFixed(2).toString().length ||
       workout.elevantionGain?.toFixed(2).toString().length
     }rem" name='${workout.cadence || workout.elevantionGain}' value= ${
@@ -340,12 +283,33 @@ class App {
     console.log('in function');
     console.log('getting data to update in progress');
     const id = Number(e.target.parentElement.dataset.id);
-    console.log(this._getWorkouts().find(workout => workout.id === Number(id)));
-    console.log(id);
+    let workoutToUpdate = this._getWorkouts().find(
+      workout => workout.id === Number(id)
+    );
+    workoutToUpdate.__proto__ =
+      workoutToUpdate.type === 'running'
+        ? Running.prototype
+        : Cycling.prototype;
+    console.log(workoutToUpdate.__proto__);
+    workoutToUpdate.__proto__._testFunc();
+    // console.log(id);
     console.log(e.target);
     console.log(e.target.date.value);
     console.log(e.target.type.value);
-    console.log(this);
+
+    const {
+      date: { value: date },
+      type: { value: type },
+      distance: { value: distance },
+    } = e.target;
+    const cadenceOrElevation =
+      e.target.cadence.value || e.target.elevantionGain.value;
+    console.log('date var ', date);
+    console.log('type var ', type);
+    console.log('type distance ', distance);
+    console.log('type elevation or cadence ', cadenceOrElevation);
+
+    // console.log(this);
   }
   //importantComment
   _deleteSingleWorkout(e) {
@@ -601,7 +565,7 @@ class App {
     return this.#workoutsList;
   }
   _saveWorkout(workout) {
-    this.#workoutsList = [...this._getWorkouts(), workout];
+    this.#workoutsList = [...this.#workoutsList, workout];
 
     localStorage.setItem('workouts', this._getWorkouts());
   }
@@ -677,11 +641,11 @@ class App {
       );
   }
   _renderWorkout(workout) {
-    const dateString = new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'numeric',
-      date: 'numeric',
-    }).format(workout.getDate);
+    // const dateString = new Intl.DateTimeFormat('en-US', {
+    //   year: 'numeric',
+    //   month: 'numeric',
+    //   date: 'numeric',
+    // }).format(workout.getDate);
 
     const formmatedDate = new Intl.DateTimeFormat('es-AR', {
       year: 'numeric',
@@ -760,7 +724,7 @@ class App {
     
     </span>
     <input readonly  name='${
-      workout.cadence || workout.elevantionGain
+      workout.cadence ? 'cadence' : 'elevationGain'
     }' class="workout__value" type="number"  style="width:${
       workout.cadence?.toFixed(2).toString().length ||
       workout.elevantionGain?.toFixed(2).toString().length
@@ -773,7 +737,7 @@ class App {
     </div>
     </div>
     <button type='submit' class='edit__workout__btn  hidden removed' style="background-color:var(--color-brand--${
-      workout.type === 'running' ? '2' : '1'
+      workout.type === 'running' ? '1' : '2'
     })">edit workout</button>
    
     </form>
@@ -790,67 +754,10 @@ class App {
   </button>
   </div>
     </li>`;
-    //     const html = ` <li class="workout workout--${workout.type}" data-id=${
-    //       workout.id
-    //     }  data-editable =${false}>
-    //     <h2 class="workout__title">  ${
-    //       workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
-    //     } on ${new Intl.DateTimeFormat('en-US', {
-    //       year: 'numeric',
-    //       month: 'long',
-    //     }).format(workout.getDate)}
-    //  </h2>
-    //     <div class="workout__details">
-    //       <span class="workout__icon"> ${
-    //         (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
-    //       } </span>
-    //       <span class="workout__value">${workout.distance}</span>
-    //       <span class="workout__unit">km</span>
-    //     </div>
-    //     <div class="workout__details">
-    //       <span class="workout__icon">⏱</span>
-    //       <span class="workout__value">${workout.duration}</span>
-    //       <span class="workout__unit">${
-    //         (workout.type === 'running' && 'min') || 'km/h'
-    //       }</span>
-    //     </div>
-    //     <div class="workout__details">
-    //     <span class="workout__icon">⚡️</span>
-    //     <span class="workout__value">${
-    //       // (workout.type === 'running' &&)
-    //       workout.pace?.toFixed(2) || workout.speed?.toFixed(2)
-    //     }</span>
-    //     <span class="workout__unit"> ${
-    //       (workout.type === 'running' && 'min/km') || 'km/h'
-    //     }</span>
-    //   </div>
-    //   <div class="workout__details">
-    //     <span class="workout__icon">
-    //     ${(workout.type === 'running' && '🦶') || '⛰'}
 
-    //     </span>
-    //     <span class="workout__value"> ${
-    //       workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
-    //     }</span>
-    //     <span class="workout__unit">m</span>
-
-    //   </div>
-    //   <div class='btn_container  hidden removed'>
-    //   <button class="btn edit__btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-
-    //   </button>
-    //   <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>
-    //   </button>
-    //   <button class="btn cancel__btn ">
-    //   <i class="fa fa-times" aria-hidden="true"></i>
-
-    //   </button>
-    //   </div>
-    //     </li>`;
     document
       .querySelector('.workouts')
       .insertAdjacentHTML('beforeend', this._returnWorkoutLi(workout));
-    // return html;
   }
   _renderWorkouts() {
     this._getWorkouts().length > 0 &&

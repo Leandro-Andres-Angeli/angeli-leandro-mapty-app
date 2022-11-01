@@ -115,7 +115,8 @@ class App {
 
     // })();
     this._getPosition();
-
+    const events = ['dblclick', 'touchstart'];
+    const events1 = ['click', 'touchstart'];
     form.addEventListener('submit', this._newWorkout.bind(this));
     ['change'].forEach(action => {
       inputType.addEventListener(action, this._toggleElevationField);
@@ -128,22 +129,49 @@ class App {
     // (!localStorage.getItem('workouts') &&
     //   localStorage.setItem('workouts', JSON.stringify([]))) ||
     // localStorage.getItem('workouts', JSON.stringify([]));
+
+    //importantComment EVENT LISTENERS WITHOUT TOUCH FUNCTIONALITY
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
     containerWorkouts.addEventListener('click', e => {
       this._handleSingleWorkout(e);
     });
-
     // btnDeleteWorkout.addEventListener('click', this._handleSingleWorkout(this));
     containerWorkouts.addEventListener(
       'dblclick',
       this._displayEditWorkoutMenu.bind(this)
     );
-    
-    containerWorkouts.addEventListener(
-      'touchstart',
-      this._displayEditWorkoutMenu.bind(this)
-    );
     btnReset.addEventListener('click', this._resetWorkouts.bind(this));
+
+    //importantComment EVENT LISTENERS WITHOUT TOUCH FUNCTIONALITY
+    //importantComment EVENT LISTENERS WITH TOUCH FUNCTIONALITY
+    // events1.forEach(event =>
+    //   containerWorkouts.addEventListener(event, this._moveToPopup.bind(this))
+    // );
+    // events1.forEach(event =>
+    //   containerWorkouts.addEventListener(
+    //     event,
+    //     this._handleSingleWorkout(event)
+    //   )
+
+    // );
+    // containerWorkouts.addEventListener('touchstart', e => {
+    //   console.log(e.target);
+    // });
+    // events.forEach(event =>
+    //   containerWorkouts.addEventListener(
+    //     event,
+    //     this._displayEditWorkoutMenu.bind(this)
+    //   )
+    // );
+    // events1.forEach(event =>
+    //   btnReset.addEventListener(event, this._resetWorkouts.bind(this))
+    // );
+    // containerWorkouts.addEventListener(
+    //   'touchstart',
+    //   this._displayEditWorkoutMenu.bind(this)
+    // );
+
+    //importantComment EVENT LISTENERS WITH TOUCH FUNCTIONALITY
   }
   _singleWorkoutFormAddEvent(liForm) {
     liForm.addEventListener('submit', e => {

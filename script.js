@@ -45,9 +45,12 @@ class Workout {
 
     this.coords = coords;
   }
-  _editValues(distance, duration) {
+  _editValues(type, distance, duration, date, coords) {
+    this.type = type;
     this.distance = distance;
     this.duration = duration;
+    this.date = date;
+    this.coords = coords;
   }
   get getType() {
     return this.type;
@@ -76,8 +79,8 @@ class Running extends Workout {
   calcPace() {
     return (this.pace = this.getDuration / this.getDistance);
   }
-  _editValues(distance, duration, cadence) {
-    super._editValues(distance, duration);
+  _editValues(type, distance, duration, cadence, date, coords) {
+    super._editValues(type, distance, duration, date, coords);
     this.cadence = cadence;
     this.calcPace();
   }
@@ -95,8 +98,8 @@ class Cycling extends Workout {
     return (this.speed = this.getDistance / (this.getDuration / 60));
   }
 
-  _editValues(distance, duration, elevantionGain) {
-    super._editValues(distance, duration);
+  _editValues(type, distance, duration, elevantionGain, date, coords) {
+    super._editValues(type, distance, duration, date, coords);
     this.elevantionGain = elevantionGain;
     this.calcSpeed();
   }
@@ -138,16 +141,12 @@ class App {
     btnReset.addEventListener('click', this._resetWorkouts.bind(this));
   }
   _singleWorkoutFormAddEvent(liForm) {
-    liForm.addEventListener(
-      'submit',
-      e => {
-        console.log('event');
-        e.preventDefault();
-        e.stopPropagation();
-        this._updateWorkoutData(e);
-      },
-      { signal: new AbortController().signal }
-    );
+    liForm.addEventListener('submit', e => {
+      console.log('event');
+      e.preventDefault();
+      e.stopPropagation();
+      this._updateWorkoutData(e);
+    });
   }
   _toggleDeleteBtn() {
     this.#workoutsList?.length > 0
@@ -282,27 +281,31 @@ class App {
   //importantComment
   //WORKING ON UPDATE SINGLE WORKOUT
   _updateWorkoutData(e) {
-    console.log('in function');
-    console.log('getting data to update in progress');
     const id = Number(e.target.parentElement.dataset.id);
     let workoutToUpdate = this._getWorkouts().find(
       workout => workout.id === Number(id)
     );
+    let indexToUpdate = this._getWorkouts().findIndex(
+      workout => workout.id === Number(id)
+    );
+    const { coords } = workoutToUpdate;
+    console.log(coords);
+    console.log(indexToUpdate);
     workoutToUpdate.__proto__ =
       workoutToUpdate.type === 'running'
         ? Running.prototype
         : Cycling.prototype;
-    console.log(workoutToUpdate.__proto__);
-    workoutToUpdate.__proto__._testFunc();
-    // console.log(id);
-    console.log(e.target);
-    console.log(e.target.date.value);
-    console.log(e.target.type.value);
+    let updateObj = workoutToUpdate;
+    updateObj.__proto__ =
+      workoutToUpdate.type === 'running'
+        ? Running.prototype
+        : Cycling.prototype;
 
     const {
       date: { value: date },
       type: { value: type },
       distance: { value: distance },
+      duration: { value: duration },
     } = e.target;
     const cadenceOrElevation =
       e.target.cadence?.value || e.target.elevantionGain?.value;
@@ -310,7 +313,29 @@ class App {
     console.log('type var ', type);
     console.log('type distance ', distance);
     console.log('type elevation or cadence ', cadenceOrElevation);
+    updateObj._editValues(
+      type,
+      distance,
+      duration,
+      cadenceOrElevation,
+      date,
+      coords
+    );
 
+    // let up = workoutToUpdate._editValues(
+    //   1,
+    //   2,
+    //   3,
+    //   4,
+    //   [1, 2]
+    //   distance,
+    // duration,
+    // cadenceOrElevation,
+    // new Date(date),
+    // coords
+    // );
+    // console.log(up);
+    this._getWorkouts()[indexToUpdate] = updateObj;
     // console.log(this);
   }
   //importantComment
@@ -329,62 +354,19 @@ class App {
       return workout.id !== Number(e.closest('li').dataset.id);
     });
 
-    // this.#workoutsList.forEach(workout => {
-    //   this._renderWorkouts(workout);
-    // });
-    // (() => {
-    //   return this._updateUi(document.querySelector('.workouts'), () =>
-    //     this._renderWorkouts()
-    //   );
-    // })().bind(this);
     this._updateUi(document.querySelector('.workouts'), () =>
       this._renderWorkouts()
     );
-    // console.log(this._getWorkouts());
   }
   _setFormNotEditable(li) {
-    // console.log(li);
     const id = li.dataset.id;
 
     let resetedLI = document.createElement('div');
-    // resetedLI.innerHTML = this._renderWorkout(
-    //   this._getWorkouts().find(workout => workout.id === Number(id))
-    // );
+
     resetedLI.innerHTML = this._returnWorkoutLi(
       this._getWorkouts().find(workout => workout.id === Number(id))
     );
     li.outerHTML = resetedLI.innerHTML;
-
-    // li.closest('li').innerHTML = '<div>reset</div>';
-
-    // console.log(li);
-    // li.querySelectorAll('input').forEach(input => {
-    //   input.setAttribute('readonly', true);
-    // });
-    // li.querySelector('input[type="date"]')
-    //   .closest('label')
-    //   .setAttribute('hidden', true);
-    // this._handleVisibility(li.querySelector('.edit__workout__btn'), 'remove');
-    // li.querySelectorAll('.edit__workout__label').forEach(label => {
-    //   label.style.display = 'none';
-    // });
-    // this._handleVisibility(li.querySelector('h2'), 'remove');
-    // this._handleVisibility(li.querySelector('button'), 'add');
-    // this._handleVisibility(li.querySelectorAll('h2')[1], 'add');
-    // this._handleInputsStyles(
-    //   li.querySelectorAll('input'),
-    //   getComputedStyle(document.documentElement).getPropertyValue(
-    //     '--color-dark--2'
-    //   ),
-    //   'white'
-    // );
-    // li.querySelectorAll('input').forEach(input => {
-    //   input.removeAttribute('readonly');
-    //   input.style.backgroundColor = getComputedStyle(
-    //     document.documentElement
-    //   ).getPropertyValue('--color-dark--2');
-    //   input.style.color = 'white';
-    // });
   }
 
   _handleInputsStyles(li, inputBackground, inputColor) {
@@ -413,13 +395,7 @@ class App {
 
     const fieldToHide = li.querySelector('.pace') || li.querySelector('.speed');
     this._handleVisibility(fieldToHide, 'add');
-    // li.querySelectorAll('input').forEach(input => {
-    //   input.removeAttribute('readonly');
-    //   input.style.backgroundColor = getComputedStyle(
-    //     document.documentElement
-    //   ).getPropertyValue('--color-light--2');
-    //   input.style.color = 'black';
-    // });
+
     const datePicker = li.querySelector('input[type="date"]');
     datePicker.closest('label').removeAttribute('hidden');
     datePicker.style.backgroundColor = getComputedStyle(
@@ -427,8 +403,6 @@ class App {
     ).getPropertyValue('--color-light--2');
     datePicker.style.color = 'black';
 
-    // li.querySelector('input[type="date"]').closest('label').style.display =
-    //   'block ruby';
     const defaultType = li
       .querySelector('h2')
       .textContent.toLowerCase()
@@ -478,7 +452,7 @@ class App {
         case 'edit__btn':
           this._editSingleWorkOut(e.target.closest('.workout'));
           this._singleWorkoutFormAddEvent(e.target.closest('.workout'));
-          // console.log(e.target.closest('.workout'));
+
           break;
         case 'cancel__btn':
           console.log(e.target.closest('.btn_container'));

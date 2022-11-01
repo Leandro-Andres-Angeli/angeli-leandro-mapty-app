@@ -129,7 +129,7 @@ class App {
     containerWorkouts.addEventListener('click', e => {
       this._handleSingleWorkout(e);
     });
-    this._singleWorkoutFormAddEvent();
+
     // btnDeleteWorkout.addEventListener('click', this._handleSingleWorkout(this));
     containerWorkouts.addEventListener(
       'dblclick',
@@ -137,15 +137,17 @@ class App {
     );
     btnReset.addEventListener('click', this._resetWorkouts.bind(this));
   }
-  _singleWorkoutFormAddEvent() {
-    return containerWorkouts.querySelectorAll('li form').forEach(form => {
-      form.addEventListener('submit', e => {
+  _singleWorkoutFormAddEvent(liForm) {
+    liForm.addEventListener(
+      'submit',
+      e => {
         console.log('event');
         e.preventDefault();
         e.stopPropagation();
         this._updateWorkoutData(e);
-      });
-    });
+      },
+      { signal: new AbortController().signal }
+    );
   }
   _toggleDeleteBtn() {
     this.#workoutsList?.length > 0
@@ -303,7 +305,7 @@ class App {
       distance: { value: distance },
     } = e.target;
     const cadenceOrElevation =
-      e.target.cadence.value || e.target.elevantionGain.value;
+      e.target.cadence?.value || e.target.elevantionGain?.value;
     console.log('date var ', date);
     console.log('type var ', type);
     console.log('type distance ', distance);
@@ -475,6 +477,7 @@ class App {
           break;
         case 'edit__btn':
           this._editSingleWorkOut(e.target.closest('.workout'));
+          this._singleWorkoutFormAddEvent(e.target.closest('.workout'));
           // console.log(e.target.closest('.workout'));
           break;
         case 'cancel__btn':

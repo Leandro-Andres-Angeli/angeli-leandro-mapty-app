@@ -145,9 +145,10 @@ class App {
       e.preventDefault();
 
       const updatedWorkout = this._updateWorkoutData(e);
-      console.log('list updated');
+
       this._setFormNotEditable(e.target.closest('li'));
       this._setLocalStorage();
+      alert(`workout with id : ${updatedWorkout.id} updated ✅`.toUpperCase());
     });
   }
   _toggleDeleteBtn() {

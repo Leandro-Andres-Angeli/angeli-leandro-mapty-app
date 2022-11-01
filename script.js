@@ -86,11 +86,11 @@ class Running extends Workout {
   }
 }
 class Cycling extends Workout {
-  elevantionGain;
+  elevationGain;
   speed;
   constructor(type, distance, duration, elevationGain, coords) {
     super(type, distance, duration, coords);
-    this.elevantionGain = Number(elevationGain);
+    this.elevationGain = Number(elevationGain);
 
     this.calcSpeed();
   }
@@ -98,9 +98,9 @@ class Cycling extends Workout {
     return (this.speed = this.getDistance / (this.getDuration / 60));
   }
 
-  _editValues(type, distance, duration, elevantionGain, date, coords) {
+  _editValues(type, distance, duration, elevationGain, date, coords) {
     super._editValues(type, distance, duration, date, coords);
-    this.elevantionGain = elevantionGain;
+    this.elevationGain = elevationGain;
     this.calcSpeed();
   }
 }
@@ -250,13 +250,16 @@ class App {
     
     </span>
     <input readonly class="workout__value" type="number" name='${
-      workout.cadence ? 'cadence' : 'elevantionGain'
+      workout.cadence ? 'cadence' : 'elevationGain'
     }'  style="width:${
       workout.cadence?.toFixed(2).toString().length ||
-      workout.elevantionGain?.toFixed(2).toString().length
-    }rem" name='${workout.cadence || workout.elevantionGain}' value= ${
-      workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
+      workout.elevationGain?.toFixed(2).toString().length
+    }rem" step=".01" name='${
+      workout.cadence || workout.elevationGain
+    }' value= ${
+      workout.cadence?.toFixed(2) || workout.elevationGain?.toFixed(2)
     }></input>
+    
     <span class="workout__unit">  ${
       (workout.type === 'running' && 'spm') || 'm'
     }</span>
@@ -307,7 +310,7 @@ class App {
       duration: { value: duration },
     } = e.target;
     const cadenceOrElevation =
-      e.target.cadence?.value || e.target.elevantionGain?.value;
+      e.target.cadence?.value || e.target.elevationGain?.value;
 
     updateObj._editValues(
       type,
@@ -579,114 +582,6 @@ class App {
       );
   }
   _renderWorkout(workout) {
-    const formmatedDate = new Intl.DateTimeFormat('es-AR', {
-      year: 'numeric',
-
-      day: 'numeric',
-      month: '2-digit',
-    }).format(new Date(workout.date));
-    console.log(formmatedDate.toString());
-    // dafault-value=${formmatedDate}
-    const formmatedDateSelect = moment(workout.date).format('YYYY-MM-DD');
-
-    const html = ` <li class="workout workout--${workout.type}" data-id=${
-      workout.id
-    }  data-editable =${false}>
-    <h2 class="workout__title" >
-    ${
-      workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
-    } on ${formmatedDate}
- </h2>
- <h2 class="workout__title hidden removed" >
- Edit Form
-</h2>
-   
-    
- <form>   
- 
- <label hidden class="edit__workout__label">Type
- <select  name='type' class="form__input " style=" width:${
-   workout.type.length + 2
- }rem">
-   <option value="running">Running</option>
-   <option value="cycling">Cycling</option>
- </select>
- </label>
- <div class="  edit__workout___label__div " hidden>
- <label class='edit__workout___label'>Edit Date
- <input name='date' type='date'  readonly style="width:${
-   formmatedDateSelect.toString().length + 1
- }rem" value=${formmatedDateSelect.toString()}></input>
- </label>
- 
- </div>
-    <div class="workout__details">
-      <span class="workout__icon"> ${
-        (workout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'
-      } </span>
-      <input name='distance' readonly class="workout__value"  type="number" style="width:${
-        workout.distance.toString().length * 1.7
-      }rem"  step="any" value=${workout.distance}></input>
-      <span class="workout__unit">km</span>
-    </div>
-    <div class="workout__details">
-      <span class="workout__icon">⏱</span>
-      <input readonly class="workout__value" type="number"  style="width:${
-        workout.duration.toString().length * 1.7
-      }rem" value=${workout.duration}></input>
-      <span class="workout__unit">${
-        (workout.type === 'running' && 'min') || 'km/h'
-      }</span>
-    </div>
-    <div class="workout__details  ${workout.pace ? 'pace' : 'speed'}">
-    <span class="workout__icon">⚡️</span>
-    <input readonly  class="workout__value" type="number"  style="width:${
-      workout.pace?.toFixed(2).length || workout.speed?.toFixed(2).length
-    }rem"  value=${
-      // (workout.type === 'running' &&)
-      workout.pace?.toFixed(2) || workout.speed?.toFixed(2)
-    }></input>
-    <span class="workout__unit"> ${
-      (workout.type === 'running' && 'min/km') || 'km/h'
-    }</span>
-  </div>
-  <div class="workout__details">
-    <span class="workout__icon">
-    ${(workout.type === 'running' && '🦶') || '⛰'}
-    
-    </span>
-    <input readonly  name='${
-      workout.cadence ? 'cadence' : 'elevationGain'
-    }' class="workout__value" type="number"  style="width:${
-      workout.cadence?.toFixed(2).toString().length ||
-      workout.elevantionGain?.toFixed(2).toString().length
-    }rem" value= ${
-      workout.cadence?.toFixed(2) || workout.elevantionGain?.toFixed(2)
-    }></input>
-    <span class="workout__unit">  ${
-      (workout.type === 'running' && 'spm') || 'm'
-    }</span>
-    </div>
-    </div>
-    <button type='submit' class='edit__workout__btn  hidden removed' style="background-color:var(--color-brand--${
-      workout.type === 'running' ? '1' : '2'
-    })">edit workout</button>
-   
-    </form>
-  </div>
-  <div class='btn_container  hidden removed'>
-  <button class="btn edit__btn"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-
-  </button>
-  <button class="btn delete__btn "><i class="fa fa-trash-o" aria-hidden="true"></i>
-  </button>
-  <button class="btn cancel__btn ">
-  <i class="fa fa-times" aria-hidden="true"></i>
-
-  </button>
-  </div>
-    </li>`;
-
     document
       .querySelector('.workouts')
       .insertAdjacentHTML('beforeend', this._returnWorkoutLi(workout));
@@ -694,7 +589,11 @@ class App {
   _renderWorkouts() {
     this._getWorkouts().length > 0 &&
       this._getWorkouts().forEach(workout => {
+        //importantComment
+        //try to refactor
+
         this._renderWorkout(workout);
+        //importantComment
       });
   }
   _hideform(form) {

@@ -138,6 +138,11 @@ class App {
       'dblclick',
       this._displayEditWorkoutMenu.bind(this)
     );
+    
+    containerWorkouts.addEventListener(
+      'touchstart',
+      this._displayEditWorkoutMenu.bind(this)
+    );
     btnReset.addEventListener('click', this._resetWorkouts.bind(this));
   }
   _singleWorkoutFormAddEvent(liForm) {

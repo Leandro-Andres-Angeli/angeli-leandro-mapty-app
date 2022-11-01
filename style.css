@@ -400,10 +400,11 @@ input[type='number'] {
   /* Firefox */
 }
 @media (max-width: 600px) {
-  :root {
-  }
   .map-section {
     height: 40vh;
+  }
+  .workout__details__container {
+    flex-wrap: wrap;
   }
   .app {
     grid-template-columns: 1fr;

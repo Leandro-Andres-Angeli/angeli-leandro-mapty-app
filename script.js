@@ -401,7 +401,7 @@ class App {
       console.log(workout.id !== Number(e.closest('li').dataset.id));
       return workout.id !== Number(e.closest('li').dataset.id);
     });
-
+    this._removeLayerById(Number(e.closest('li').dataset.id));
     this._updateUi(document.querySelector('.workouts'), () =>
       this._renderWorkouts()
     );
@@ -416,7 +416,9 @@ class App {
     );
     li.outerHTML = resetedLI.innerHTML;
   }
-
+  _removeLayerById(id) {
+    this.#map.eachLayer(layer => (layer.id === id ? layer.remove() : null));
+  }
   _handleInputsStyles(li, inputBackground, inputColor) {
     li.forEach(input => {
       console.log('in');
@@ -424,6 +426,7 @@ class App {
       input.style.color = inputColor;
     });
   }
+
   _handleInputsStyles(li, inputBackground, inputColor, attributeToRemove) {
     li.forEach(input => {
       input.removeAttribute(attributeToRemove);
@@ -588,12 +591,13 @@ class App {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
-
+    let layerGroupWorkouts = L.layerGroup().addTo(this.#map);
+    console.log(layerGroupWorkouts);
     this.#map.on('click', mapEvent => this._showForm.call(this, mapEvent));
 
     this._getWorkouts() &&
       this._getWorkouts().forEach(workout =>
-        this._renderWorkoutMarker(workout)
+        this._renderWorkoutMarker(workout, layerGroupWorkouts)
       );
   }
   _showForm(mapEvent) {
@@ -610,7 +614,7 @@ class App {
         inputCadence.parentElement.classList.remove('form__row--hidden'));
   }
 
-  _renderWorkoutMarker(newWorkout) {
+  _renderWorkoutMarker(newWorkout, layerGroup) {
     var myIcon = L.icon({
       iconUrl: 'icon.png',
       iconSize: [38, 38],
@@ -619,7 +623,10 @@ class App {
       icon: myIcon,
       riseOnHover: true,
       draggable: true,
-    }).addTo(this.#map);
+    });
+    layer.id = newWorkout.id;
+    layer.addTo(this.#map);
+    // layer.addTo(layerGroup);
 
     let popup = L.popup({ autoClose: false }).setContent(
       `${(newWorkout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
@@ -633,7 +640,8 @@ class App {
     );
 
     layer.bindPopup(popup).openPopup();
-    layer.addTo(this.#map);
+    console.log(layer.id);
+    // layer.addTo(this.#map);
     //importantComment
     //REFACTORING MARKET FUNCTIONALITY
     // var myIcon = L.icon({

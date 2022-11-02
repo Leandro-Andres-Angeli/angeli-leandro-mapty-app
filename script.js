@@ -135,7 +135,36 @@ class App {
     containerWorkouts.addEventListener('click', e => {
       this._handleSingleWorkout(e);
     });
+
+    //importantComment
+    //Adding drag functionality
+
+    // containerWorkouts.addEventListener('dragover', e => {
+    //   if (e.target.tagName === 'LI') {
+    //     // e.target.style.zIndex = 1000000;
+    //     // e.target.style.translate = `0 ${e.pageY}px`;
+    //     e.target.parentElement.style.position = 'relative';
+    //     e.target.style.position = 'absolute';
+
+    //     e.target.style.top = '0';
+    //     e.target.style.left = '0';
+    //     e.target.style.zIndex = 1000;
+    //     e.target.style.transform = `translateY(${
+    //       e.pageY - e.target.parentElement.getClientRects()[0].y
+    //     }px)`;
+    //     console.log('dragover data', e), console.log(e.target);
+    //     console.log('pageX', e.pageX), console.log('pageY', e.pageY);
+    //   }
+    // });
+    // containerWorkouts.addEventListener('dragend', e => {
+    //   console.log('end');
+    //   console.log(e);
+    // });
+    //Adding drag functionality
+    //importantComment
+    //importantComment I guess it's old code , doesn't work
     // btnDeleteWorkout.addEventListener('click', this._handleSingleWorkout(this));
+    //importantComment I guess it's old code , doesn't work
     containerWorkouts.addEventListener(
       'dblclick',
       this._displayEditWorkoutMenu.bind(this)
@@ -213,9 +242,9 @@ class App {
       day: 'numeric',
       month: '2-digit',
     }).format(new Date(workout.date));
-    return ` <li class="workout workout--${workout.type}" data-id=${
-      workout.id
-    }  data-editable =${false}>
+    return ` <li draggable='true' class="workout workout--${
+      workout.type
+    }" data-id=${workout.id}  data-editable =${false}>
     <h2 class="workout__title" >
     ${
       workout.type.slice(0, 1).toUpperCase() + workout.type.slice(1)
@@ -539,7 +568,9 @@ class App {
     return this.#workoutsList;
   }
   _saveWorkout(workout) {
-    this.#workoutsList = [...this.#workoutsList, workout];
+    this.#workoutsList = this.#workoutsList
+      ? [...this.#workoutsList, workout]
+      : [workout];
 
     localStorage.setItem('workouts', this._getWorkouts());
   }
@@ -578,41 +609,69 @@ class App {
       : (inputElevation.parentElement.classList.add('form__row--hidden'),
         inputCadence.parentElement.classList.remove('form__row--hidden'));
   }
+
   _renderWorkoutMarker(newWorkout) {
     var myIcon = L.icon({
       iconUrl: 'icon.png',
       iconSize: [38, 38],
     });
-    const mp = new L.Marker(newWorkout.coords, {
+    let layer = L.marker(newWorkout.coords, {
       icon: myIcon,
       riseOnHover: true,
       draggable: true,
-    });
+    }).addTo(this.#map);
 
-    mp.addTo(this.#map)
-      .bindPopup(
-        L.popup({
-          maxWidth: 250,
-          maxHeight: 200,
-          autoClose: false,
-          keepInView: true,
-          closeOnClick: true,
+    let popup = L.popup({ autoClose: false }).setContent(
+      `${(newWorkout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
+        newWorkout.type.slice(0, 1).toUpperCase() + newWorkout.type.slice(1)
+      } on
+          ${new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'long',
+          }).format(new Date(newWorkout.date))}
+        `
+    );
 
-          className: `${newWorkout.type}-popup `,
-        })
-      )
+    layer.bindPopup(popup).openPopup();
+    layer.addTo(this.#map);
+    //importantComment
+    //REFACTORING MARKET FUNCTIONALITY
+    // var myIcon = L.icon({
+    //   iconUrl: 'icon.png',
+    //   iconSize: [38, 38],
+    // });
+    // const mp = new L.Marker(newWorkout.coords, {
+    //   icon: myIcon,
+    //   riseOnHover: true,
+    //   draggable: true,
+    // });
 
-      .setPopupContent(
-        `${(newWorkout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
-          newWorkout.type.slice(0, 1).toUpperCase() + newWorkout.type.slice(1)
-        } on
-      ${new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'long',
-      }).format(new Date(newWorkout.date))}
+    // mp.addTo(this.#map)
+    //   .bindPopup(
+    //     L.popup({
+    //       maxWidth: 250,
+    //       maxHeight: 200,
+    //       autoClose: false,
+    //       keepInView: true,
+    //       closeOnClick: true,
 
-    `
-      );
+    //       className: `${newWorkout.type}-popup `,
+    //     })
+    //   )
+
+    //   .setPopupContent(
+    //     `${(newWorkout.type === 'running' && '🏃‍♂️') || '🚴‍♀️'}  ${
+    //       newWorkout.type.slice(0, 1).toUpperCase() + newWorkout.type.slice(1)
+    //     } on
+    //   ${new Intl.DateTimeFormat('en-US', {
+    //     year: 'numeric',
+    //     month: 'long',
+    //   }).format(new Date(newWorkout.date))}
+
+    // `
+    //   );
+    //REFACTORING MARKET FUNCTIONALITY
+    //importantComment
   }
   _renderWorkout(workout) {
     document

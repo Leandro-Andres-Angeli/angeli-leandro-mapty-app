@@ -419,6 +419,9 @@ class App {
   _removeLayerById(id) {
     this.#map.eachLayer(layer => (layer.id === id ? layer.remove() : null));
   }
+  _removeAllLayers() {
+    this.#map.eachLayer(layer => (layer.id ? layer.remove() : null));
+  }
   _handleInputsStyles(li, inputBackground, inputColor) {
     li.forEach(input => {
       console.log('in');
@@ -769,6 +772,7 @@ class App {
         .querySelectorAll('.workout')
         .forEach(workout => workout.remove());
       this._toggleDeleteBtn();
+      this._removeAllLayers();
     }
   }
 }

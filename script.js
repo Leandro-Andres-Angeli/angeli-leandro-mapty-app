@@ -136,22 +136,10 @@ class App {
       this._handleSingleWorkout(e);
     });
     //ADDING DRAG FUNCTIONALITY
-    containerWorkouts.querySelectorAll('li').forEach(workout => {
-      workout.addEventListener('dragstart', e => {
-        setTimeout(() => {
-          e.target.classList.add('dragging');
-        }, 0);
-        e.dataTransfer.dropEffect = 'move';
-        e.dataTransfer.effectAllowed = 'move';
-      }),
-        workout.addEventListener('drag', e => {
-          e.dataTransfer.effectAllowed = 'move';
-        }),
-        workout.addEventListener('dragend', e =>
-          e.target.classList.remove('dragging')
-        );
-    });
 
+    this._addDragAndDropFuncItems([
+      ...containerWorkouts.querySelectorAll('li'),
+    ]);
     containerWorkouts.addEventListener('dragover', e => {
       e.preventDefault();
       const workoutUl = e.target.closest('ul');
@@ -159,8 +147,6 @@ class App {
 
       const draggable = document.querySelector('.dragging');
       const afterElement = this._getDragAfterElement(workoutUl, e.clientY);
-      // console.log(afterElement);
-      // console.log(e.target.closest('li'));
 
       if (!afterElement) {
         workoutUl.append(draggable);
@@ -178,27 +164,6 @@ class App {
     //importantComment
     //ADDING DRAG FUNCTIONALITY
 
-    // containerWorkouts.addEventListener('dragover', e => {
-    //   if (e.target.tagName === 'LI') {
-    //     // e.target.style.zIndex = 1000000;
-    //     // e.target.style.translate = `0 ${e.pageY}px`;
-    //     e.target.parentElement.style.position = 'relative';
-    //     e.target.style.position = 'absolute';
-
-    //     e.target.style.top = '0';
-    //     e.target.style.left = '0';
-    //     e.target.style.zIndex = 1000;
-    //     e.target.style.transform = `translateY(${
-    //       e.pageY - e.target.parentElement.getClientRects()[0].y
-    //     }px)`;
-    //     console.log('dragover data', e), console.log(e.target);
-    //     console.log('pageX', e.pageX), console.log('pageY', e.pageY);
-    //   }
-    // });
-    // containerWorkouts.addEventListener('dragend', e => {
-    //   console.log('end');
-    //   console.log(e);
-    // });
     //Adding drag functionality
     //importantComment
     //importantComment I guess it's old code , doesn't work
@@ -241,6 +206,7 @@ class App {
 
     //importantComment EVENT LISTENERS WITH TOUCH FUNCTIONALITY
   }
+
   _singleWorkoutFormAddEvent(liForm) {
     liForm.addEventListener('submit', e => {
       e.preventDefault();
@@ -250,6 +216,24 @@ class App {
       this._setFormNotEditable(e.target.closest('li'));
       this._setLocalStorage();
       alert(`workout with id : ${updatedWorkout.id} updated ✅`.toUpperCase());
+    });
+  }
+  _addDragAndDropFuncItems(items) {
+    if (!items) return;
+    return items.forEach(workout => {
+      workout.addEventListener('dragstart', e => {
+        setTimeout(() => {
+          e.target.classList.add('dragging');
+        }, 0);
+        e.dataTransfer.dropEffect = 'move';
+        e.dataTransfer.effectAllowed = 'move';
+      }),
+        workout.addEventListener('drag', e => {
+          e.dataTransfer.effectAllowed = 'move';
+        }),
+        workout.addEventListener('dragend', e =>
+          e.target.classList.remove('dragging')
+        );
     });
   }
   _toggleDeleteBtn() {

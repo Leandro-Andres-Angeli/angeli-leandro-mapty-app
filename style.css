@@ -116,6 +116,11 @@ a:visited {
   overflow-x: hidden;
   padding-top: 4rem;
   position: relative;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+.workouts.drag-on {
+  background: #868688b3;
 }
 
 .workouts::-webkit-scrollbar {
@@ -134,6 +139,11 @@ a:visited {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0.75rem 1.5rem;
+  display: block;
+  transition: display 0.5s ease;
+}
+.workout.dragging {
+  display: none;
 }
 .workout--running {
   border-left: 5px solid var(--color-brand--2);

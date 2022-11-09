@@ -135,9 +135,48 @@ class App {
     containerWorkouts.addEventListener('click', e => {
       this._handleSingleWorkout(e);
     });
+    //ADDING DRAG FUNCTIONALITY
+    containerWorkouts.querySelectorAll('li').forEach(workout => {
+      workout.addEventListener('dragstart', e => {
+        setTimeout(() => {
+          e.target.classList.add('dragging');
+        }, 0);
+        e.dataTransfer.dropEffect = 'move';
+        e.dataTransfer.effectAllowed = 'move';
+      }),
+        workout.addEventListener('drag', e => {
+          e.dataTransfer.effectAllowed = 'move';
+        }),
+        workout.addEventListener('dragend', e =>
+          e.target.classList.remove('dragging')
+        );
+    });
 
+    containerWorkouts.addEventListener('dragover', e => {
+      e.preventDefault();
+      const workoutUl = e.target.closest('ul');
+      workoutUl.classList.add('drag-on');
+
+      const draggable = document.querySelector('.dragging');
+      const afterElement = this._getDragAfterElement(workoutUl, e.clientY);
+      // console.log(afterElement);
+      // console.log(e.target.closest('li'));
+
+      if (!afterElement) {
+        workoutUl.append(draggable);
+      }
+      workoutUl.insertBefore(draggable, afterElement);
+    });
+    containerWorkouts.addEventListener('drop', e =>
+      e.target.classList.remove('drag-on')
+    );
+    containerWorkouts.addEventListener(
+      'dragenter',
+      e => (e.preventDefault(), (e.effectAllowed = 'move'))
+    );
+    containerWorkouts.addEventListener('dragleave', e => e.preventDefault());
     //importantComment
-    //Adding drag functionality
+    //ADDING DRAG FUNCTIONALITY
 
     // containerWorkouts.addEventListener('dragover', e => {
     //   if (e.target.tagName === 'LI') {
@@ -528,7 +567,29 @@ class App {
   _blockMapActions(zIndexVal) {
     document.documentElement.style.setProperty('--after-display', zIndexVal);
   }
+  _getDragAfterElement = (container, y) => {
+    console.log(y);
+    const draggableElements = [
+      ...container.querySelectorAll('.workout:not(.dragging)'),
+    ];
+    console.log(draggableElements);
 
+    return draggableElements.reduce(
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        // console.log(box);
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      },
+      {
+        offset: Number.NEGATIVE_INFINITY,
+      }
+    ).element;
+  };
   _setEditable(li) {
     const liEl = li;
     const booleanEditable = JSON.parse(liEl.dataset.editable);
@@ -574,9 +635,10 @@ class App {
     return this.#workoutsList;
   }
   _saveWorkout(workout) {
-    this.#workoutsList = this.#workoutsList
-      ? [...this.#workoutsList, workout]
-      : [workout];
+    this.#workoutsList = (this.#workoutsList && [
+      ...this.#workoutsList,
+      workout,
+    ]) || [workout];
 
     localStorage.setItem('workouts', this._getWorkouts());
   }

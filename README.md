@@ -13,6 +13,6 @@ When user clicks on each workout it will scroll to the map and zoom in this part
 Any change in workouts list will be persisted in browser's localStorage
 Application logic in JS file is based on ES6 classes, implemented private fields and methods when necessary.
 I used all native JS functionalities, no libraries, I wanted to take that approach in this single project
-  live demo @ <a href='https://angeli-mapty-app.netlify.app/'>link</a>
+  live demo @ <a href='https://angeli-mapty-app.netlify.app/'>[link](https://angeli-mapty-app.netlify.app/)</a>
   </section>
 

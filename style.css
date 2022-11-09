@@ -259,7 +259,13 @@ a:visited {
 }
 
 .form__btn {
-  display: none;
+  background: #1996d2;
+  width: fit-content;
+  padding: 2px 16px;
+  border: none;
+  border-radius: 4px;
+  margin: 10px;
+  color: white;
 }
 
 .copyright {

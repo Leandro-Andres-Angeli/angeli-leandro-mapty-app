@@ -13,7 +13,7 @@ const inputElevation = document.querySelector('.form__input--elevation');
 const btnReset = document.querySelector('.btn-reset');
 
 const editForm = workoutToEditData => {
-  console.log(workoutToEditData);
+  
   return `<div>${workoutToEditData}</div>`;
 };
 // const btnDeleteWorkout = document.querySelectorAll('.delete__btn');
@@ -24,7 +24,7 @@ const editForm = workoutToEditData => {
 
 const error = error => {
   const { code } = error;
-  console.log(error);
+  
   code === 1 && console.log('user denied GPS');
 };
 class Workout {
@@ -64,9 +64,7 @@ class Workout {
   get getDuration() {
     return this.duration;
   }
-  _testFunc() {
-    console.log('test function');
-  }
+
 }
 class Running extends Workout {
   cadence;
@@ -385,8 +383,7 @@ class App {
       workout => workout.id === Number(id)
     );
     const { coords } = workoutToUpdate;
-    console.log(coords);
-    console.log(indexToUpdate);
+
     workoutToUpdate.__proto__ =
       workoutToUpdate.type === 'running'
         ? Running.prototype
@@ -416,9 +413,6 @@ class App {
   }
   //importantComment
   _deleteSingleWorkout(e) {
-    console.log(e.closest('li'));
-    console.log(this._getWorkouts());
-    console.log(Number(e.closest('li').dataset.id));
     const confirmDelete = confirm(
       "THIS WORKOUT WILL BE DELETED .DO YOU WAN'T TO PROCEED ??"
     );
@@ -426,7 +420,6 @@ class App {
       return;
     }
     this.#workoutsList = this.#workoutsList.filter(workout => {
-      console.log(workout.id !== Number(e.closest('li').dataset.id));
       return workout.id !== Number(e.closest('li').dataset.id);
     });
     this._removeLayerById(Number(e.closest('li').dataset.id));
@@ -452,7 +445,6 @@ class App {
   }
   _handleInputsStyles(li, inputBackground, inputColor) {
     li.forEach(input => {
-      console.log('in');
       input.style.backgroundColor = inputBackground;
       input.style.color = inputColor;
     });
@@ -496,7 +488,7 @@ class App {
       option.value === defaultType && option.setAttribute('selected', true);
     });
 
-    console.log(defaultType);
+
     li.querySelectorAll('label').forEach(label => {
       label.style.display = 'block ruby';
     });
@@ -524,7 +516,7 @@ class App {
 
           break;
         case 'cancel__btn':
-          console.log(e.target.closest('.btn_container'));
+          
           this._handleVisibility(e.target.closest('.btn_container'), 'add');
           document.documentElement.style.setProperty('--after-display', -1);
           this._setFormNotEditable(e.target.closest('li'));
@@ -564,7 +556,7 @@ class App {
     return draggableElements.reduce(
       (closest, child) => {
         const box = child.getBoundingClientRect();
-        // console.log(box);
+        
         const offset = y - box.top - box.height / 2;
         if (offset < 0 && offset > closest.offset) {
           return { offset: offset, element: child };
@@ -644,7 +636,7 @@ class App {
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
     let layerGroupWorkouts = L.layerGroup().addTo(this.#map);
-    console.log(layerGroupWorkouts);
+    
     this.#map.on('click', mapEvent => this._showForm.call(this, mapEvent));
 
     this._getWorkouts() &&
@@ -692,7 +684,7 @@ class App {
     );
 
     layer.bindPopup(popup).openPopup();
-    console.log(layer.id);
+    
     // layer.addTo(this.#map);
     //importantComment
     //REFACTORING MARKET FUNCTIONALITY

@@ -426,6 +426,9 @@ input[type='number'] {
   .workout__details__container {
     flex-wrap: wrap;
   }
+  .form {
+    height: 13.25rem;
+  }
 }
 @media (max-width: 800px) {
   :root {

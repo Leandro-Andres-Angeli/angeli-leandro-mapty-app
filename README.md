@@ -1,5 +1,5 @@
 # angeli-leandro-mapty-app
-##geolocation app Mapty
+Alt-H2 geolocation app Mapty
 
 Project from Jonas Schmedtmann's "Javascript from Zero to Hero" Course.In this app I implemented geolocation native JS API in order to get user's location in a map 
 , implementing also LeafletJS library.User can make a list of exercises , decide  if the exercise it's going to be cycling or running, set distance , time and some other

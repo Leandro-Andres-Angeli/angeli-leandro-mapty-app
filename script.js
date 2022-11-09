@@ -137,9 +137,10 @@ class App {
     });
     //ADDING DRAG FUNCTIONALITY
 
-    this._addDragAndDropFuncItems([
-      ...containerWorkouts.querySelectorAll('li'),
-    ]);
+    containerWorkouts.querySelectorAll('li').forEach(workout => {
+      this._addDragAndDropFuncItems(workout);
+    });
+
     containerWorkouts.addEventListener('dragover', e => {
       e.preventDefault();
       const workoutUl = e.target.closest('ul');
@@ -218,23 +219,22 @@ class App {
       alert(`workout with id : ${updatedWorkout.id} updated ✅`.toUpperCase());
     });
   }
-  _addDragAndDropFuncItems(items) {
-    if (!items) return;
-    return items.forEach(workout => {
-      workout.addEventListener('dragstart', e => {
-        setTimeout(() => {
-          e.target.classList.add('dragging');
-        }, 0);
-        e.dataTransfer.dropEffect = 'move';
+  _addDragAndDropFuncItems(workout) {
+    if (!workout) return;
+
+    workout.addEventListener('dragstart', e => {
+      setTimeout(() => {
+        e.target.classList.add('dragging');
+      }, 0);
+      e.dataTransfer.dropEffect = 'move';
+      e.dataTransfer.effectAllowed = 'move';
+    }),
+      workout.addEventListener('drag', e => {
         e.dataTransfer.effectAllowed = 'move';
       }),
-        workout.addEventListener('drag', e => {
-          e.dataTransfer.effectAllowed = 'move';
-        }),
-        workout.addEventListener('dragend', e =>
-          e.target.classList.remove('dragging')
-        );
-    });
+      workout.addEventListener('dragend', e =>
+        e.target.classList.remove('dragging')
+      );
   }
   _toggleDeleteBtn() {
     this.#workoutsList?.length > 0
@@ -254,6 +254,11 @@ class App {
       const { coords } = this._getWorkouts().find(
         workout => workout.id == e.target.closest('li').dataset.id
       );
+      //importantComment
+      //setting  map into view
+      document.querySelector('#map').scrollIntoView({ behavior: 'smooth' });
+      //setting  map into view
+      //importantComment
       this.#map.setView(coords, 30, { pan: { animate: true, duration: 2 } });
     }
   }
@@ -552,11 +557,9 @@ class App {
     document.documentElement.style.setProperty('--after-display', zIndexVal);
   }
   _getDragAfterElement = (container, y) => {
-    console.log(y);
     const draggableElements = [
       ...container.querySelectorAll('.workout:not(.dragging)'),
     ];
-    console.log(draggableElements);
 
     return draggableElements.reduce(
       (closest, child) => {
@@ -731,9 +734,15 @@ class App {
     //importantComment
   }
   _renderWorkout(workout) {
+    const workoutLi = this._returnWorkoutLi(workout);
+
     document
       .querySelector('.workouts')
-      .insertAdjacentHTML('beforeend', this._returnWorkoutLi(workout));
+      .insertAdjacentHTML('beforeend', workoutLi);
+
+    this._addDragAndDropFuncItems(
+      document.querySelector(`[data-id="${workout.id}"`)
+    );
   }
   _renderWorkouts() {
     this._getWorkouts().length > 0 &&

@@ -658,7 +658,6 @@ class App {
     let layer = L.marker(newWorkout.coords, {
       icon: myIcon,
       riseOnHover: true,
-      draggable: true,
     });
     layer.id = newWorkout.id;
     layer.addTo(this.#map);

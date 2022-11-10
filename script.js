@@ -13,7 +13,6 @@ const inputElevation = document.querySelector('.form__input--elevation');
 const btnReset = document.querySelector('.btn-reset');
 
 const editForm = workoutToEditData => {
-  
   return `<div>${workoutToEditData}</div>`;
 };
 // const btnDeleteWorkout = document.querySelectorAll('.delete__btn');
@@ -24,7 +23,7 @@ const editForm = workoutToEditData => {
 
 const error = error => {
   const { code } = error;
-  
+
   code === 1 && console.log('user denied GPS');
 };
 class Workout {
@@ -64,7 +63,6 @@ class Workout {
   get getDuration() {
     return this.duration;
   }
-
 }
 class Running extends Workout {
   cadence;
@@ -252,11 +250,7 @@ class App {
       const { coords } = this._getWorkouts().find(
         workout => workout.id == e.target.closest('li').dataset.id
       );
-      //importantComment
-      //setting  map into view
-      document.querySelector('#map').scrollIntoView({ behavior: 'smooth' });
-      //setting  map into view
-      //importantComment
+
       this.#map.setView(coords, 30, { pan: { animate: true, duration: 2 } });
     }
   }
@@ -488,7 +482,6 @@ class App {
       option.value === defaultType && option.setAttribute('selected', true);
     });
 
-
     li.querySelectorAll('label').forEach(label => {
       label.style.display = 'block ruby';
     });
@@ -516,7 +509,6 @@ class App {
 
           break;
         case 'cancel__btn':
-          
           this._handleVisibility(e.target.closest('.btn_container'), 'add');
           document.documentElement.style.setProperty('--after-display', -1);
           this._setFormNotEditable(e.target.closest('li'));
@@ -556,7 +548,7 @@ class App {
     return draggableElements.reduce(
       (closest, child) => {
         const box = child.getBoundingClientRect();
-        
+
         const offset = y - box.top - box.height / 2;
         if (offset < 0 && offset > closest.offset) {
           return { offset: offset, element: child };
@@ -636,7 +628,7 @@ class App {
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
     let layerGroupWorkouts = L.layerGroup().addTo(this.#map);
-    
+
     this.#map.on('click', mapEvent => this._showForm.call(this, mapEvent));
 
     this._getWorkouts() &&
@@ -684,7 +676,7 @@ class App {
     );
 
     layer.bindPopup(popup).openPopup();
-    
+
     // layer.addTo(this.#map);
     //importantComment
     //REFACTORING MARKET FUNCTIONALITY

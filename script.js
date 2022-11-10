@@ -15,6 +15,7 @@ const btnReset = document.querySelector('.btn-reset');
 const editForm = workoutToEditData => {
   return `<div>${workoutToEditData}</div>`;
 };
+
 // const btnDeleteWorkout = document.querySelectorAll('.delete__btn');
 //LECTURE
 //Using geolocation API
@@ -107,9 +108,11 @@ class App {
   #map;
 
   constructor() {
-    // (() => {
-
-    // })();
+    (() => {
+      alert(
+        'WELCOME TO MAPTY APP .IN THIS APPLICATION YOU CAN SET AND EXERCISE ROUTE FOR YOUR ROUTINES.ONCE YOU ADDED AND EXERCISE YOU CAN EDIT IT OR DELETE IT BY DOUBLE CLICKING ON EACH ELEMENT.ALSO DRAG AND DROP EACH ITEMS IF YOU WANT TO REORDER THE LIST! THANKS FOR VISITING!'
+      );
+    })();
     this._getPosition();
     const events = ['dblclick', 'touchstart'];
     const events1 = ['click', 'touchstart'];

@@ -814,6 +814,7 @@ class App {
         .forEach(workout => workout.remove());
       this._toggleDeleteBtn();
       this._removeAllLayers();
+      this._reset();
     }
   }
 }
